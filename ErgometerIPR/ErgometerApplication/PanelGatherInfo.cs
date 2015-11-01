@@ -59,6 +59,9 @@ namespace ErgometerApplication
             this.Name = "panelLogin";
             this.Size = new System.Drawing.Size(800, 600);
             this.TabIndex = 0;
+
+            Random rand = new Random();
+
             // 
             // pictureBoxBike
             // 
@@ -93,6 +96,7 @@ namespace ErgometerApplication
             this.textBoxLeeftijd.Size = new System.Drawing.Size(167, 20);
             this.textBoxLeeftijd.TabIndex = 2;
             this.textBoxLeeftijd.KeyDown += TextBox_KeyDown;
+            this.textBoxLeeftijd.Text = rand.Next(18, 60) + "";
 
             // 
             // textBoxPassword
@@ -104,6 +108,7 @@ namespace ErgometerApplication
             this.textBoxGewicht.Size = new System.Drawing.Size(167, 20);
             this.textBoxGewicht.TabIndex = 2;
             this.textBoxGewicht.KeyDown += TextBox_KeyDown;
+            this.textBoxGewicht.Text = rand.Next(50, 120) + "";
             // 
             // textBoxUsername
             // 
@@ -114,6 +119,7 @@ namespace ErgometerApplication
             this.textBoxLengte.Size = new System.Drawing.Size(167, 20);
             this.textBoxLengte.TabIndex = 2;
             this.textBoxLengte.KeyDown += TextBox_KeyDown;
+            this.textBoxLengte.Text = rand.Next(150, 210) + "";
             // 
             // comboBox
             // 
