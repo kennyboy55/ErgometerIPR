@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErgometerIPR", "ErgometerIPR\ErgometerIPR.csproj", "{2E76E1E6-CBA7-46EA-858A-223B13F193A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErgometerApplication", "ErgometerApplication\ErgometerApplication.csproj", "{1191E100-AA1B-4F41-85E2-EC2BE8ED39FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErgometerDoctorApplication", "ErgometerDoctorApplication\ErgometerDoctorApplication.csproj", "{E543FF58-161A-4A41-AAE7-651327834362}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErgometerLibrary", "ErgometerLibrary\ErgometerLibrary.csproj", "{CC20FF4E-8751-42A1-A32B-0E5B22452CAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErgometerServer", "ErgometerServer\ErgometerServer.csproj", "{398293F9-9DF4-4F7A-AC85-6CF488B08B29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +17,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2E76E1E6-CBA7-46EA-858A-223B13F193A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E76E1E6-CBA7-46EA-858A-223B13F193A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E76E1E6-CBA7-46EA-858A-223B13F193A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E76E1E6-CBA7-46EA-858A-223B13F193A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1191E100-AA1B-4F41-85E2-EC2BE8ED39FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1191E100-AA1B-4F41-85E2-EC2BE8ED39FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1191E100-AA1B-4F41-85E2-EC2BE8ED39FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1191E100-AA1B-4F41-85E2-EC2BE8ED39FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E543FF58-161A-4A41-AAE7-651327834362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E543FF58-161A-4A41-AAE7-651327834362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E543FF58-161A-4A41-AAE7-651327834362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E543FF58-161A-4A41-AAE7-651327834362}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC20FF4E-8751-42A1-A32B-0E5B22452CAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC20FF4E-8751-42A1-A32B-0E5B22452CAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC20FF4E-8751-42A1-A32B-0E5B22452CAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC20FF4E-8751-42A1-A32B-0E5B22452CAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{398293F9-9DF4-4F7A-AC85-6CF488B08B29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{398293F9-9DF4-4F7A-AC85-6CF488B08B29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{398293F9-9DF4-4F7A-AC85-6CF488B08B29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{398293F9-9DF4-4F7A-AC85-6CF488B08B29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
