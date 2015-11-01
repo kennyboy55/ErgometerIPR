@@ -47,7 +47,7 @@ namespace ErgometerApplication
                         int min = FindMaxValue(MainClient.Metingen, x => x.HeartBeat);
                         if(max - min > 10) //Hartslag niet stabiel
                         {
-                            client.updateStepsText("Uw hartslag is not niet stabiel, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
+                            client.updateStepsText("Uw hartslag is niet stabiel, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
                             return;
                         }
                         else
@@ -62,7 +62,7 @@ namespace ErgometerApplication
                     if (MainClient.GetLastMeting().Seconds - workloadStarted > 180)
                     {
                         //Checken of de heartrate niet groter is dan 75%, anders stoppen
-                        if (workloadHearthbeat > CalculateMaximumHeartRate())
+                        if (workloadHearthbeat > (CalculateMaximumHeartRate() * 0.80))
                         {
                             workloadStarted = MainClient.GetLastMeting().Seconds;
                             currentstate = state.COOLINGDOWN;
@@ -78,7 +78,7 @@ namespace ErgometerApplication
 
                         workloadStarted = MainClient.GetLastMeting().Seconds;
                         workloadHearthbeat = 0;
-                        Console.WriteLine("3:00 gefietst, workload" + (workloads.Count - 1) + " af, nieuwe waardes maken");
+                        Console.WriteLine("3:00 gefietst, workload" + (GetCurrentWorkload()) + " af, nieuwe waardes maken");
                     }
                     else if (MainClient.GetLastMeting().Seconds - workloadStarted > 160 && workloadHearthbeat == 0)
                     {
@@ -228,7 +228,7 @@ namespace ErgometerApplication
             {
                 return "Slecht";
             }
-            return "Undefined";
+            return "Fout";
         }
 
         //          HELPER FUNCTIONS         //
