@@ -34,6 +34,7 @@ namespace ErgometerApplication
         {
             this.components = new System.ComponentModel.Container();
             this.updateTimer = new System.Windows.Forms.Timer(this.components);
+            this.beeptimer = new System.Windows.Forms.Timer(this.components);
             this.panelClientContainer = new System.Windows.Forms.Panel();
             this.panelDataViewLeft = new System.Windows.Forms.Panel();
             this.panelClientChat = new ErgometerApplication.PanelClientChat();
@@ -62,6 +63,11 @@ namespace ErgometerApplication
             // 
             this.updateTimer.Interval = 500;
             this.updateTimer.Tick += new System.EventHandler(this.updateTimer_Tick);
+            //
+            // beeptimer
+            //
+            this.beeptimer.Interval = 833;
+            this.beeptimer.Tick += new System.EventHandler(this.updateBeep);
             // 
             // panelClientContainer
             // 
@@ -173,6 +179,7 @@ namespace ErgometerApplication
 
         #endregion
         private System.Windows.Forms.Timer updateTimer;
+        public Timer beeptimer;
         private System.Windows.Forms.Panel panelClientContainer;
         private PanelClientChat panelClientChat;
         private PanelLogin panelLogin;

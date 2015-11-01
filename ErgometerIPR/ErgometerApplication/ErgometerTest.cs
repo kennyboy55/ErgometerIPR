@@ -33,6 +33,7 @@ namespace ErgometerApplication
             client.updateStepsText("U begint nu aan een warmup, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
 			workloads = new List<Workload>();
             MainClient.ComPort.Write("PW 25");
+            MainClient.Client.beeptimer.Start();
         }
 
         public void timerTick()
@@ -44,7 +45,9 @@ namespace ErgometerApplication
                     {
                         List<ErgometerLibrary.Meting> last10 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 10, 10);
                         int max = FindMaxValue(MainClient.Metingen, x => x.HeartBeat);
-                        int min = FindMaxValue(MainClient.Metingen, x => x.HeartBeat);
+                        int min = FindMinValue(MainClient.Metingen, x => x.HeartBeat);
+                        Console.WriteLine(max);
+                        Console.WriteLine(min);
                         if(max - min > 10) //Hartslag niet stabiel
                         {
                             client.updateStepsText("Uw hartslag is niet stabiel, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
