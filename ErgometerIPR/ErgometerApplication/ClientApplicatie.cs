@@ -21,6 +21,7 @@ namespace ErgometerApplication
     public partial class ClientApplicatie : Form
     {
         public PanelClientChat chat;
+        public ErgometerTest ergotest;
 
         public ClientApplicatie()
         {
@@ -30,7 +31,7 @@ namespace ErgometerApplication
 
         private void updateTimer_Tick(object sender, EventArgs e)
         {
-            updateStepsText("Yeah: " + Helper.Now);
+            
 
             if(MainClient.Doctor.Connected)
             {
@@ -73,11 +74,10 @@ namespace ErgometerApplication
 
                     if (connect)
                     {
-                        panelClientContainer.BringToFront();
-                        chat = panelClientChat;
+                        panelGatherInfo.BringToFront();
+                        
                         this.labelUsername.Text = panelLogin.textBoxUsername.Text;
-                        panelTopBar.Visible = true;
-                        updateTimer.Start();
+                        
                     }
                     else
                     {
@@ -99,6 +99,15 @@ namespace ErgometerApplication
         public void updateStepsText(string text)
         {
             steps.setText(text);
+        }
+
+        internal void CreateNewTest(char geslacht, int leeftijd, int gewicht, int lengte)
+        {
+            panelTopBar.Visible = true;
+            panelClientContainer.BringToFront();
+            chat = panelClientChat;
+            updateTimer.Start();
+            ergotest = new ErgometerTest()
         }
 
         private void buttonLogOff_Click(object sender, EventArgs e)

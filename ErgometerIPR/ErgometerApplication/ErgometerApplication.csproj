@@ -59,6 +59,7 @@
     <Compile Include="ChartPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ErgometerTest.cs" />
     <Compile Include="MainClient.cs" />
     <Compile Include="PanelClientSteps.cs">
       <SubType>Component</SubType>
@@ -70,6 +71,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PanelClientContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PanelGatherInfo.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PanelLogin.cs">

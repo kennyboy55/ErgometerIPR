@@ -1,4 +1,5 @@
-﻿using System.IO.Ports;
+﻿using System;
+using System.IO.Ports;
 using System.Windows.Forms;
 
 namespace ErgometerApplication
@@ -37,6 +38,7 @@ namespace ErgometerApplication
             this.panelDataViewLeft = new System.Windows.Forms.Panel();
             this.panelClientChat = new ErgometerApplication.PanelClientChat();
             this.panelLogin = new ErgometerApplication.PanelLogin(this);
+            this.panelGatherInfo = new PanelGatherInfo(this);
             this.panelTopBar = new System.Windows.Forms.Panel();
             this.buttonLogOff = new System.Windows.Forms.Button();
             this.labelUsername = new System.Windows.Forms.Label();
@@ -157,6 +159,7 @@ namespace ErgometerApplication
             this.MinimumSize = new System.Drawing.Size(550, 550);
             this.Controls.Add(this.panelTopBar);
             this.Controls.Add(this.panelLogin);
+            this.Controls.Add(this.panelGatherInfo);
             this.Controls.Add(this.panelClientContainer);
             this.Name = "ClientApplicatie";
             this.Text = "Client Applicatie";
@@ -173,6 +176,7 @@ namespace ErgometerApplication
         private System.Windows.Forms.Panel panelClientContainer;
         private PanelClientChat panelClientChat;
         private PanelLogin panelLogin;
+        private PanelGatherInfo panelGatherInfo;
         private System.Windows.Forms.Panel panelDataViewLeft;
         private System.Windows.Forms.Panel panelTopBar;
         private System.Windows.Forms.Button buttonLogOff;

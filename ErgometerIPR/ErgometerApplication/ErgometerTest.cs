@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ErgometerApplication
 {
-    class ErgometerTest
+    public class ErgometerTest
     {
         private int weight;
         private int length;
