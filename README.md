@@ -6,6 +6,7 @@ Ergometer IPR2 - Janco &amp; Kenneth
 - Test afbreken op elk moment
 - eindscherm
 - geluid voor nieuwe workload/mode
-- Testresultaten ook op server....
+
+### Misschien toevoegen
+- Testresultaten ook op server
 - Eigenlijk meerdere medische specialisten
-- 
