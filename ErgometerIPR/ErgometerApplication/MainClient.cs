@@ -174,6 +174,11 @@ namespace ErgometerApplication
             return m;
         }
 
+        public static Meting GetLastMeting()
+        {
+            return Metingen.Last();
+        }
+
         public static void run()
         {
             while(running)

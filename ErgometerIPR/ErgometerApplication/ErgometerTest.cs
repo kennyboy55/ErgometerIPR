@@ -15,8 +15,9 @@ namespace ErgometerApplication
 
         private enum state {WARMUP, WORKLOAD, COOLINGDOWN};
         private state currentstate;
-        private int stateStarted;
-        private int stateHearthbeat;
+        private int workloadStarted;
+        private int workloadHearthbeat;
+        private int workloadnumber;
 
         public ErgometerTest(int weight, int length , int age, char gender)
         {
@@ -25,7 +26,7 @@ namespace ErgometerApplication
             this.age = age;
             this.gender = gender;
             currentstate = state.WARMUP;
-            stateStarted = 0;
+            MainClient.ComPort.Write("SET PW 25");
         }
 
         public void timerTick()
@@ -33,12 +34,11 @@ namespace ErgometerApplication
             switch(currentstate)
             {
                 case state.WARMUP:
-                    if (MainClient.Metingen.Last().Seconds > 30)
+                    if (MainClient.GetLastMeting().Seconds > 30)
                     {
                         List<ErgometerLibrary.Meting> last10 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 10, 10);
                         int max = FindMaxValue(MainClient.Metingen, x => x.HeartBeat);
                         int min = FindMaxValue(MainClient.Metingen, x => x.HeartBeat);
-                        MainClient.ComPort.Write("SET PW 25");
                         if(max - min > 20) //Hartslag niet stabiel
                         {
                             return;
@@ -46,24 +46,40 @@ namespace ErgometerApplication
                         else
                         {
                             currentstate = state.WORKLOAD;
-                            stateStarted = MainClient.Metingen.Last().Seconds;
+                            workloadStarted = MainClient.GetLastMeting().Seconds;
+                            Console.WriteLine("Warmup is goed, hartslag stabiel, ga naar workload test");
                         }
                     }
                     break;
                 case state.WORKLOAD:
-                    if (stateStarted - MainClient.Metingen.Last().Seconds > 180)
+                    if (MainClient.GetLastMeting().Seconds - workloadStarted > 180)
                     {
-                        //Bereken nieuwe kracht
-                        //Zet nieuwe kracht
-                        //State started weer op de huidige tijd zetten
-                        //Checken of het niet groter dan 75% is
-                        //stateHeartbeat weer op 0 zetten
-
+                        //Checken of de heartrate niet groter is dan 75%, anders stoppen
+                        if(workloadnumber == 0)
+                        {
+                            if(workloadHearthbeat < 80)
+                                MainClient.ComPort.Write("SET PW 125");
+                            else if (workloadHearthbeat < 89)
+                                MainClient.ComPort.Write("SET PW 100");
+                            else if (workloadHearthbeat < 100)
+                                MainClient.ComPort.Write("SET PW 75");
+                            else if (workloadHearthbeat > 100)
+                                MainClient.ComPort.Write("SET PW 50");
+                        }
+                        else
+                        {
+                            MainClient.ComPort.Write((MainClient.GetLastMeting().Power + 25).ToString());
+                        }
+                        workloadStarted = MainClient.GetLastMeting().Seconds;
+                        workloadHearthbeat = 0;
+                        workloadnumber++;
+                        Console.WriteLine("3:00 gefietst, workload" + workloadnumber + " af, nieuwe waardes maken");
                     }
-                    else if (stateStarted - MainClient.Metingen.Last().Seconds > 160 && stateHearthbeat != 0)
+                    else if (MainClient.GetLastMeting().Seconds - workloadStarted > 160 && workloadHearthbeat == 0)
                     {
                         List<ErgometerLibrary.Meting> last80 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 80, 80);
-                        stateHearthbeat = FindAvergeValue(MainClient.Metingen, x => x.HeartBeat);
+                        workloadHearthbeat = FindAvergeValue(MainClient.Metingen, x => x.HeartBeat);
+                        Console.WriteLine("2:40 gefiets, gemiddelde harstslag berekenen:" + workloadHearthbeat);
                     }
                     break;
                 case state.COOLINGDOWN:
