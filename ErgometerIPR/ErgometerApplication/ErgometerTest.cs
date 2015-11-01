@@ -13,11 +13,11 @@ namespace ErgometerApplication
         private int age;
         private char gender;
 
-        private enum state {WARMUP, WORKLOAD, COOLINGDOWN};
+        private enum state {WARMUP, WORKLOAD, COOLINGDOWN, STOP};
         private state currentstate;
         private int workloadStarted;
         private int workloadHearthbeat;
-        private int workloadnumber;
+        private List<Workload> workloads;
 
         private ClientApplicatie client;
 
@@ -28,10 +28,13 @@ namespace ErgometerApplication
             this.age = age;
             this.gender = gender;
             currentstate = state.WARMUP;
-            workloadnumber = 1;
+
             this.client = client;
             client.updateStepsText("U begint nu aan een warmup, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
+			workloads = new List<Workload>();
             MainClient.ComPort.Write("PW 25");
+            
+            Console.WriteLine(CalculateVOMax());
         }
 
         public void timerTick()
@@ -53,7 +56,7 @@ namespace ErgometerApplication
                         {
                             currentstate = state.WORKLOAD;
                             workloadStarted = MainClient.GetLastMeting().Seconds;
-                            client.updateStepsText("De warmup is voltooid. U begint nu aan de " + NumToText(workloadnumber) + " workload.");
+                            client.updateStepsText("De warmup is voltooid. U begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload.");
                         }
                     }
                     break;
@@ -63,45 +66,56 @@ namespace ErgometerApplication
                         //Checken of de heartrate niet groter is dan 75%, anders stoppen
                         if (workloadHearthbeat > CalculateMaximumHeartRate())
                         {
+                            workloadStarted = MainClient.GetLastMeting().Seconds;
                             currentstate = state.COOLINGDOWN;
                             client.updateStepsText("Uw hartslag heeft het kritieke punt bereikt, we beginnen nu aan de cooldown.");
                         }
 
-                        int pw = GetWorkloadPower(workloadnumber);
+                        int pw = GetWorkloadPower(GetCurrentWorkload());
+                        workloads.Add(new Workload(MainClient.GetLastMeting().Power, workloadHearthbeat));
                         MainClient.ComPort.Write("PW " + pw);
 
-                        client.updateStepsText("U heeft de workload afgerond, u begint nu aan de " + NumToText(workloadnumber) + " workload. Uw nieuwe weerstand is " + pw + " Watt.");
+                        client.updateStepsText("U heeft de workload afgerond, u begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload. Uw nieuwe weerstand is " + pw + " Watt.");
+
 
                         workloadStarted = MainClient.GetLastMeting().Seconds;
                         workloadHearthbeat = 0;
-                        workloadnumber++;
-                        Console.WriteLine("3:00 gefietst, workload" + workloadnumber + " af, nieuwe waardes maken");
+                        Console.WriteLine("3:00 gefietst, workload" + (workloads.Count - 1) + " af, nieuwe waardes maken");
                     }
                     else if (MainClient.GetLastMeting().Seconds - workloadStarted > 160 && workloadHearthbeat == 0)
                     {
                         List<ErgometerLibrary.Meting> last80 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 80, 80);
                         workloadHearthbeat = FindAvergeValue(MainClient.Metingen, x => x.HeartBeat);
                         Console.WriteLine("2:40 gefiets, gemiddelde harstslag berekenen:" + workloadHearthbeat);
-                        client.updateStepsText("U bent nu met de " + NumToText(workloadnumber) + " workload bezig. Uw gemiddelde hartslag is berekend als " + workloadHearthbeat + "bpm.");
+                        client.updateStepsText("U bent nu met de " + NumToText(GetCurrentWorkload()) + " workload bezig. Uw gemiddelde hartslag is berekend als " + workloadHearthbeat + "bpm.");
                     }
                     else if(MainClient.GetLastMeting().Seconds - workloadStarted > 8 && MainClient.GetLastMeting().Seconds - workloadStarted < 10)
                     {
-                        client.updateStepsText("U bent nu met de " + NumToText(workloadnumber) + " workload bezig. De fiets staat nu ingesteld op " + MainClient.GetLastMeting().Power + " Watt");
+                        client.updateStepsText("U bent nu met de " + NumToText(GetCurrentWorkload()) + " workload bezig. De fiets staat nu ingesteld op " + MainClient.GetLastMeting().Power + " Watt");
                     }
                     break;
                 case state.COOLINGDOWN:
+                    MainClient.ComPort.Write("PW 25");
+                    if(MainClient.GetLastMeting().Seconds - workloadStarted > 360)
+                    {
+                        currentstate = state.STOP;
+                        client.updateStepsText("De test is afgelopen.");
+                    }
+                    else if(MainClient.GetLastMeting().Seconds - workloadStarted > 8 && MainClient.GetLastMeting().Seconds - workloadStarted < 10)
+                    {
+                        client.updateStepsText("U bent momenteel met de cooldown bezig.");
+                    }
                     break;
             }
         }
 
         //          WORKLOAD                //
 
-
         private int GetWorkloadPower(int workload)
         {
             if (gender == 'V')
             {
-                if (workloadnumber == 1)
+                if (workload == 1)
                 {
                     if (workloadHearthbeat < 80)
                         return 125;
@@ -119,7 +133,7 @@ namespace ErgometerApplication
             }
             else if(gender == 'M')
             {
-                if(workloadnumber == 1)
+                if(workload == 1)
                 {
                     if (workloadHearthbeat < 90)
                         return 150;
@@ -128,7 +142,7 @@ namespace ErgometerApplication
                     else
                         return 100;
                 }
-                else if(workloadnumber == 2)
+                else if(workload == 2)
                 {
                     if(workloadHearthbeat < 120)
                     {
@@ -167,8 +181,26 @@ namespace ErgometerApplication
             return 25;
         }
 
+        //          CALCULATOR FUNCTIONS    //
+
+        public double CalculateVOMax()
+        {
+            Workload wa = workloads[workloads.Count - 2];
+            Workload wb = workloads.Last();
+
+            var LmA = 0.32643 + 0.55275 * wa.getKiloponds() + 0.014429 * Math.Pow(wa.getKiloponds(), 2) + 0.00025271 * Math.Pow(wa.getKiloponds(), 3);
+            var LmB = 0.32643 + 0.55275 * wb.getKiloponds() + 0.014429 * Math.Pow(wb.getKiloponds(), 2) + 0.00025271 * Math.Pow(wb.getKiloponds(), 3);
+            var VOABS = LmB + ((LmB - LmA) / (wb.heartrate - wa.heartrate)) * (220 - age - wb.heartrate);
+            return VOABS * 1000 / weight;
+        }
+
 
         //          HELPER FUNCTIONS         //
+
+        private int GetCurrentWorkload()
+        {
+            return workloads.Count - 1;
+        }
 
         private double CalculateMaximumHeartRate()
         {
