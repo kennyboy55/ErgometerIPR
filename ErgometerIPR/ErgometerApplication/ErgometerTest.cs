@@ -33,8 +33,6 @@ namespace ErgometerApplication
             client.updateStepsText("U begint nu aan een warmup, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
 			workloads = new List<Workload>();
             MainClient.ComPort.Write("PW 25");
-            
-            Console.WriteLine(CalculateVOMax());
         }
 
         public void timerTick()
@@ -199,7 +197,7 @@ namespace ErgometerApplication
 
         private int GetCurrentWorkload()
         {
-            return workloads.Count - 1;
+            return workloads.Count + 1;
         }
 
         private double CalculateMaximumHeartRate()
