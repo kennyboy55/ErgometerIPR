@@ -102,12 +102,12 @@ namespace ErgometerApplication
             steps.setText(text);
         }
 
-        internal void CreateNewTest(char geslacht, int leeftijd, int gewicht, int lengte)
+        public void CreateNewTest(char geslacht, int leeftijd, int gewicht, int lengte)
         {
             panelTopBar.Visible = true;
             panelClientContainer.BringToFront();
             chat = panelClientChat;
-            ergotest = new ErgometerTest(gewicht, lengte, leeftijd, geslacht);
+            ergotest = new ErgometerTest(gewicht, lengte, leeftijd, geslacht, this);
             MainClient.ComPort.Write("RS");
             MainClient.ComPort.Read();
             Thread.Sleep(200);

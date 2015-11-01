@@ -19,7 +19,9 @@ namespace ErgometerApplication
         private int workloadHearthbeat;
         private int workloadnumber;
 
-        public ErgometerTest(int weight, int length , int age, char gender)
+        private ClientApplicatie client;
+
+        public ErgometerTest(int weight, int length , int age, char gender, ClientApplicatie client)
         {
             this.weight = weight;
             this.length = length;
@@ -27,7 +29,9 @@ namespace ErgometerApplication
             this.gender = gender;
             currentstate = state.WARMUP;
             workloadnumber = 1;
-            MainClient.ComPort.Write("SET PW 25");
+            this.client = client;
+            client.updateStepsText("U begint nu aan een warmup, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
+            MainClient.ComPort.Write("PW 25");
         }
 
         public void timerTick()
@@ -42,13 +46,14 @@ namespace ErgometerApplication
                         int min = FindMaxValue(MainClient.Metingen, x => x.HeartBeat);
                         if(max - min > 10) //Hartslag niet stabiel
                         {
+                            client.updateStepsText("Uw hartslag is not niet stabiel, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
                             return;
                         }
                         else
                         {
                             currentstate = state.WORKLOAD;
                             workloadStarted = MainClient.GetLastMeting().Seconds;
-                            Console.WriteLine("Warmup is goed, hartslag stabiel, ga naar workload test");
+                            client.updateStepsText("De warmup is voltooid. U begint nu aan de " + NumToText(workloadnumber) + " workload.");
                         }
                     }
                     break;
@@ -59,9 +64,13 @@ namespace ErgometerApplication
                         if (workloadHearthbeat > CalculateMaximumHeartRate())
                         {
                             currentstate = state.COOLINGDOWN;
+                            client.updateStepsText("Uw hartslag heeft het kritieke punt bereikt, we beginnen nu aan de cooldown.");
                         }
 
-                        MainClient.ComPort.Write("PW " + GetWorkloadPower(workloadnumber));
+                        int pw = GetWorkloadPower(workloadnumber);
+                        MainClient.ComPort.Write("PW " + pw);
+
+                        client.updateStepsText("U heeft de workload afgerond, u begint nu aan de " + NumToText(workloadnumber) + " workload. Uw nieuwe weerstand is " + pw + " Watt.");
 
                         workloadStarted = MainClient.GetLastMeting().Seconds;
                         workloadHearthbeat = 0;
@@ -73,6 +82,11 @@ namespace ErgometerApplication
                         List<ErgometerLibrary.Meting> last80 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 80, 80);
                         workloadHearthbeat = FindAvergeValue(MainClient.Metingen, x => x.HeartBeat);
                         Console.WriteLine("2:40 gefiets, gemiddelde harstslag berekenen:" + workloadHearthbeat);
+                        client.updateStepsText("U bent nu met de " + NumToText(workloadnumber) + " workload bezig. Uw gemiddelde hartslag is berekend als " + workloadHearthbeat + "bpm.");
+                    }
+                    else if(MainClient.GetLastMeting().Seconds - workloadStarted > 8 && MainClient.GetLastMeting().Seconds - workloadStarted < 10)
+                    {
+                        client.updateStepsText("U bent nu met de " + NumToText(workloadnumber) + " workload bezig. De fiets staat nu ingesteld op " + MainClient.GetLastMeting().Power + " Watt");
                     }
                     break;
                 case state.COOLINGDOWN:
@@ -209,6 +223,33 @@ namespace ErgometerApplication
                 totalvalue += projection(item);
             }
             return totalvalue / list.Count;
+        }
+
+        public string NumToText(int num)
+        {
+            switch(num)
+            {
+                case 1:
+                    return "eerste";
+                case 2:
+                    return "tweede";
+                case 3:
+                    return "derde";
+                case 4:
+                    return "vierde";
+                case 5:
+                    return "vijfde";
+                case 6:
+                    return "zesde";
+                case 7:
+                    return "zevende";
+                case 8:
+                    return "achste";
+                case 9:
+                    return "negende";
+                default:
+                    return "volgende";
+            }
         }
     }
 }

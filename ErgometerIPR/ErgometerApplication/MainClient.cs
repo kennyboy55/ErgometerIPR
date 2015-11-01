@@ -176,7 +176,10 @@ namespace ErgometerApplication
 
         public static Meting GetLastMeting()
         {
-            return Metingen.Last();
+            if (Metingen.Count > 1)
+                return Metingen.Last();
+            else
+                return new Meting(0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
         public static void run()

@@ -133,6 +133,7 @@ namespace ErgometerDoctorApplication
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
+            this.MinimumSize = new System.Drawing.Size(700, 550);
             this.Controls.Add(this.panelTopBar);
             this.Controls.Add(this.panelClientContainer);
             this.Name = "SessionWindow";
