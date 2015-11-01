@@ -230,6 +230,7 @@ namespace ErgometerApplication
 
         private static void ParseValueSet(NetCommand command)
         {
+            return;
             switch(command.Value)
             {
                 case NetCommand.ValueType.DISTANCE:

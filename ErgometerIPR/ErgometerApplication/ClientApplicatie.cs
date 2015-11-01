@@ -107,10 +107,12 @@ namespace ErgometerApplication
             panelTopBar.Visible = true;
             panelClientContainer.BringToFront();
             chat = panelClientChat;
-            ergotest = new ErgometerTest(gewicht, lengte, leeftijd, geslacht, this);
             MainClient.ComPort.Write("RS");
             MainClient.ComPort.Read();
             Thread.Sleep(200);
+            MainClient.ComPort.Write("CM");
+            MainClient.ComPort.Read();
+            ergotest = new ErgometerTest(gewicht, lengte, leeftijd, geslacht, this);
             updateTimer.Start();
             
         }
