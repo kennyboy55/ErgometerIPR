@@ -26,6 +26,7 @@ namespace ErgometerApplication
             this.age = age;
             this.gender = gender;
             currentstate = state.WARMUP;
+            workloadnumber = 1;
             MainClient.ComPort.Write("SET PW 25");
         }
 
@@ -39,7 +40,7 @@ namespace ErgometerApplication
                         List<ErgometerLibrary.Meting> last10 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 10, 10);
                         int max = FindMaxValue(MainClient.Metingen, x => x.HeartBeat);
                         int min = FindMaxValue(MainClient.Metingen, x => x.HeartBeat);
-                        if(max - min > 20) //Hartslag niet stabiel
+                        if(max - min > 10) //Hartslag niet stabiel
                         {
                             return;
                         }
@@ -55,21 +56,13 @@ namespace ErgometerApplication
                     if (MainClient.GetLastMeting().Seconds - workloadStarted > 180)
                     {
                         //Checken of de heartrate niet groter is dan 75%, anders stoppen
-                        if(workloadnumber == 0)
+                        if (workloadHearthbeat > CalculateMaximumHeartRate())
                         {
-                            if(workloadHearthbeat < 80)
-                                MainClient.ComPort.Write("SET PW 125");
-                            else if (workloadHearthbeat < 89)
-                                MainClient.ComPort.Write("SET PW 100");
-                            else if (workloadHearthbeat < 100)
-                                MainClient.ComPort.Write("SET PW 75");
-                            else if (workloadHearthbeat > 100)
-                                MainClient.ComPort.Write("SET PW 50");
+                            currentstate = state.COOLINGDOWN;
                         }
-                        else
-                        {
-                            MainClient.ComPort.Write((MainClient.GetLastMeting().Power + 25).ToString());
-                        }
+
+                        MainClient.ComPort.Write("PW " + GetWorkloadPower(workloadnumber));
+
                         workloadStarted = MainClient.GetLastMeting().Seconds;
                         workloadHearthbeat = 0;
                         workloadnumber++;
@@ -85,6 +78,79 @@ namespace ErgometerApplication
                 case state.COOLINGDOWN:
                     break;
             }
+        }
+
+        //          WORKLOAD                //
+
+
+        private int GetWorkloadPower(int workload)
+        {
+            if (gender == 'V')
+            {
+                if (workloadnumber == 1)
+                {
+                    if (workloadHearthbeat < 80)
+                        return 125;
+                    else if (workloadHearthbeat < 89)
+                        return 100;
+                    else if (workloadHearthbeat < 100)
+                        return 75;
+                    else
+                        return 50;
+                }
+                else
+                {
+                    return MainClient.GetLastMeting().Power + 25;
+                }
+            }
+            else if(gender == 'M')
+            {
+                if(workloadnumber == 1)
+                {
+                    if (workloadHearthbeat < 90)
+                        return 150;
+                    else if (workloadHearthbeat < 105)
+                        return 125;
+                    else
+                        return 100;
+                }
+                else if(workloadnumber == 2)
+                {
+                    if(workloadHearthbeat < 120)
+                    {
+                        if (MainClient.GetLastMeting().Power == 150)
+                            return 225;
+                        else if (MainClient.GetLastMeting().Power == 125)
+                            return 200;
+                        else
+                            return 175;
+                    }
+                    else if(workloadHearthbeat < 135)
+                    {
+                        if (MainClient.GetLastMeting().Power == 150)
+                            return 200;
+                        else if (MainClient.GetLastMeting().Power == 125)
+                            return 175;
+                        else
+                            return 150;
+                    }
+                    else
+                    {
+                        if (MainClient.GetLastMeting().Power == 150)
+                            return 175;
+                        else if (MainClient.GetLastMeting().Power == 125)
+                            return 150;
+                        else
+                            return 125;
+                    }
+                }
+                else
+                {
+                    return MainClient.GetLastMeting().Power + 25;
+                }
+            }
+
+            return 25;
         }
 
 
