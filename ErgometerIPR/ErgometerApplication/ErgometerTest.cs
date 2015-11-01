@@ -16,6 +16,7 @@ namespace ErgometerApplication
         private enum state {WARMUP, WORKLOAD, COOLINGDOWN};
         private state currentstate;
         private int stateStarted;
+        private int stateHearthbeat;
 
         public ErgometerTest(int weight, int length , int age, char gender)
         {
@@ -37,6 +38,7 @@ namespace ErgometerApplication
                         List<ErgometerLibrary.Meting> last10 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 10, 10);
                         int max = FindMaxValue(MainClient.Metingen, x => x.HeartBeat);
                         int min = FindMaxValue(MainClient.Metingen, x => x.HeartBeat);
+                        MainClient.ComPort.Write("SET PW 25");
                         if(max - min > 20) //Hartslag niet stabiel
                         {
                             return;
@@ -44,10 +46,25 @@ namespace ErgometerApplication
                         else
                         {
                             currentstate = state.WORKLOAD;
+                            stateStarted = MainClient.Metingen.Last().Seconds;
                         }
                     }
                     break;
                 case state.WORKLOAD:
+                    if (stateStarted - MainClient.Metingen.Last().Seconds > 180)
+                    {
+                        //Bereken nieuwe kracht
+                        //Zet nieuwe kracht
+                        //State started weer op de huidige tijd zetten
+                        //Checken of het niet groter dan 75% is
+                        //stateHeartbeat weer op 0 zetten
+
+                    }
+                    else if (stateStarted - MainClient.Metingen.Last().Seconds > 160 && stateHearthbeat != 0)
+                    {
+                        List<ErgometerLibrary.Meting> last80 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 80, 80);
+                        stateHearthbeat = FindAvergeValue(MainClient.Metingen, x => x.HeartBeat);
+                    }
                     break;
                 case state.COOLINGDOWN:
                     break;
@@ -96,6 +113,20 @@ namespace ErgometerApplication
                 }
             }
             return minValue;
+        }
+
+        public int FindAvergeValue<T>(List<T> list, Converter<T, int> projection)
+        {
+            if (list.Count == 0)
+            {
+                throw new InvalidOperationException("Empty list");
+            }
+            int totalvalue = 0;
+            foreach (T item in list)
+            {
+                totalvalue += projection(item);
+            }
+            return totalvalue / list.Count;
         }
     }
 }
