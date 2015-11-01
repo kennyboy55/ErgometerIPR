@@ -194,6 +194,44 @@ namespace ErgometerApplication
             return VOABS * 1000 / weight;
         }
 
+        public double CalculateMET()
+        {
+            return CalculateVOMax() / 3.5;
+        }
+
+        public double CalculatePopulationAverage()
+        {
+            if(gender == 'M')
+                return 51.86 - 0.28 * age;
+            return 41.435 - 0.23 * age;
+        }
+
+        public string CalculateRating()
+        {
+            var dev = (gender == 'M') ? 6 : 5.5;
+            var Zscore = (CalculateVOMax() - CalculatePopulationAverage()) / dev;
+            if (Zscore >= 1)
+            {
+                return "Geweldig";
+            }
+            else if (Zscore < 1 && Zscore >= 0.5)
+            {
+                return "Goed";
+            }
+            else if (Zscore < 0.5 && Zscore >= -0.5)
+            {
+                return "Gemiddeld";
+            }
+            else if (Zscore < -0.5 && Zscore >= -1)
+            {
+                return "Redelijk";
+            }
+            else if (Zscore < -1)
+            {
+                return "Slecht";
+            }
+            return "Undefined";
+        }
 
         //          HELPER FUNCTIONS         //
 
