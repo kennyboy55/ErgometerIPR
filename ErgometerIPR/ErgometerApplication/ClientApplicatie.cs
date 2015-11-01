@@ -31,7 +31,6 @@ namespace ErgometerApplication
 
         private void updateTimer_Tick(object sender, EventArgs e)
         {
-            
 
             if(MainClient.Doctor.Connected)
             {
@@ -49,6 +48,8 @@ namespace ErgometerApplication
                     energy.updateValue(m.Energy);
                     actualpower.updateValue(m.ActualPower);
                     time.updateValue(m.Seconds);
+
+                    ergotest.timerTick();
                 }
                 else
                 {
@@ -106,8 +107,9 @@ namespace ErgometerApplication
             panelTopBar.Visible = true;
             panelClientContainer.BringToFront();
             chat = panelClientChat;
+            ergotest = new ErgometerTest(gewicht, lengte, leeftijd, geslacht);
             updateTimer.Start();
-            ergotest = new ErgometerTest()
+            
         }
 
         private void buttonLogOff_Click(object sender, EventArgs e)
