@@ -60,6 +60,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MainClient.cs" />
+    <Compile Include="PanelClientSteps.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PanelClientData.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -67,9 +70,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PanelClientContainer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="PanelClientDataView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PanelLogin.cs">

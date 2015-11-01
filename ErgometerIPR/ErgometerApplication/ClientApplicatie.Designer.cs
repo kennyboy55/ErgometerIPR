@@ -35,7 +35,6 @@ namespace ErgometerApplication
             this.updateTimer = new System.Windows.Forms.Timer(this.components);
             this.panelClientContainer = new System.Windows.Forms.Panel();
             this.panelDataViewLeft = new System.Windows.Forms.Panel();
-            this.panelGraphView = new ErgometerApplication.PanelGraphView();
             this.panelClientChat = new ErgometerApplication.PanelClientChat();
             this.panelLogin = new ErgometerApplication.PanelLogin(this);
             this.panelTopBar = new System.Windows.Forms.Panel();
@@ -51,6 +50,7 @@ namespace ErgometerApplication
             this.energy = new PanelClientData("Energie", 0, 200);
             this.actualpower = new PanelClientData("Absolute Weerstand", 0, 400);
             this.time = new PanelClientData("Tijd", 0, 400);
+            this.steps = new PanelClientSteps();
 
             this.panelClientContainer.SuspendLayout();
             this.panelTopBar.SuspendLayout();
@@ -58,12 +58,11 @@ namespace ErgometerApplication
             // 
             // updateTimer
             // 
-            this.updateTimer.Interval = 600;
+            this.updateTimer.Interval = 500;
             this.updateTimer.Tick += new System.EventHandler(this.updateTimer_Tick);
             // 
             // panelClientContainer
             // 
-            this.panelClientContainer.Controls.Add(this.panelGraphView);
             this.panelClientContainer.Controls.Add(this.panelDataViewLeft);
 
             this.panelClientContainer.Controls.Add(this.panelClientChat);
@@ -75,7 +74,7 @@ namespace ErgometerApplication
             // 
             // panelDataViewLeft
             // 
-            this.panelDataViewLeft.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panelDataViewLeft.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelDataViewLeft.Location = new System.Drawing.Point(0, 0);
             this.panelDataViewLeft.Name = "panelDataViewLeft";
             this.panelDataViewLeft.Size = new System.Drawing.Size(18, 600);
@@ -88,6 +87,7 @@ namespace ErgometerApplication
             this.panelDataViewLeft.Controls.Add(power);
             this.panelDataViewLeft.Controls.Add(energy);
             this.panelDataViewLeft.Controls.Add(actualpower);
+            this.panelDataViewLeft.Controls.Add(steps);
             this.panelDataViewLeft.Controls.Add(time);
 
             // 
@@ -161,7 +161,6 @@ namespace ErgometerApplication
             this.Name = "ClientApplicatie";
             this.Text = "Client Applicatie";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Resize += new System.EventHandler(this.ClientApplicatie_Resize);
             this.panelClientContainer.ResumeLayout(false);
             this.panelTopBar.ResumeLayout(false);
             this.panelTopBar.PerformLayout();
@@ -173,7 +172,6 @@ namespace ErgometerApplication
         private System.Windows.Forms.Timer updateTimer;
         private System.Windows.Forms.Panel panelClientContainer;
         private PanelClientChat panelClientChat;
-        private PanelGraphView panelGraphView;
         private PanelLogin panelLogin;
         private System.Windows.Forms.Panel panelDataViewLeft;
         private System.Windows.Forms.Panel panelTopBar;
@@ -181,6 +179,7 @@ namespace ErgometerApplication
         private System.Windows.Forms.Label labelUsername;
         private System.Windows.Forms.Label labelHallo;
         public PanelClientData heartBeat, RPM, speed, distance, power, energy, seconds, actualpower, time;
+        public PanelClientSteps steps;
     }
 
     

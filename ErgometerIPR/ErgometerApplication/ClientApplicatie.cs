@@ -21,17 +21,17 @@ namespace ErgometerApplication
     public partial class ClientApplicatie : Form
     {
         public PanelClientChat chat;
-        private int count;
 
         public ClientApplicatie()
         {
             InitializeComponent();
             MainClient.Init(this);
-            count = 0;
         }
 
         private void updateTimer_Tick(object sender, EventArgs e)
         {
+            updateStepsText("Yeah: " + Helper.Now);
+
             if(MainClient.Doctor.Connected)
             {
                 MainClient.ComPort.Write("ST");
@@ -48,14 +48,6 @@ namespace ErgometerApplication
                     energy.updateValue(m.Energy);
                     actualpower.updateValue(m.ActualPower);
                     time.updateValue(m.Seconds);
-
-                    if (count >= 10)
-                    {
-                        count = 0;
-                        panelGraphView.updateAllCharts(MainClient.Metingen);
-                    }
-
-                    count++;
                 }
                 else
                 {
@@ -104,29 +96,9 @@ namespace ErgometerApplication
             }
         }
 
-        private void ClientApplicatie_Resize(object sender, System.EventArgs e)
+        public void updateStepsText(string text)
         {
-            Control control = (Control)sender;
-            if (control.Size.Width < 980)
-            {
-                panelGraphView.Visible = false;
-                panelClientChat.Width = 400;
-                panelDataViewLeft.Dock = DockStyle.Fill;
-            }
-            if (control.Size.Width >= 980 && control.Size.Width < 1368)
-            {
-                panelGraphView.Visible = true;
-                panelDataViewLeft.Width = 250;
-                panelClientChat.Width = 400;
-                panelDataViewLeft.Dock = DockStyle.Left;
-            }
-            if (control.Size.Width >= 1368)
-            {
-                panelGraphView.Visible = true;
-                panelDataViewLeft.Width = 400;
-                panelDataViewLeft.Dock = DockStyle.Left;
-            }
-
+            steps.setText(text);
         }
 
         private void buttonLogOff_Click(object sender, EventArgs e)

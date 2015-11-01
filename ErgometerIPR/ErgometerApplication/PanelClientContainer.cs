@@ -11,17 +11,14 @@ namespace ErgometerApplication
     {
 
         public PanelClientChat panelClientChat;
-        public PanelGraphView panelGraphView;
 
         public PanelClientContainer() : base()
         {
             this.panelClientChat = new PanelClientChat();
-            this.panelGraphView = new PanelGraphView();
 
             // 
             // panelClientContainer
             // 
-            this.Controls.Add(this.panelGraphView);
             this.Controls.Add(this.panelClientChat);
             this.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Location = new System.Drawing.Point(0, 0);
