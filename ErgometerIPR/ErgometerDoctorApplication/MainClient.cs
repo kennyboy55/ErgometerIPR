@@ -123,7 +123,7 @@ namespace ErgometerDoctorApplication
         {
             while (running)
             {
-                if (loggedin && Server.Connected && Server.Available > 0)
+                if (loggedin && Server.Connected)
                 {
                     NetCommand command = NetHelper.ReadNetCommand(Server);
                     HandleNetCommand(command);
