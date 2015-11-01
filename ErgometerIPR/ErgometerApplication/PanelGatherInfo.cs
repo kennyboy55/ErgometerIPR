@@ -180,7 +180,7 @@ namespace ErgometerApplication
             this.lblLengte.Name = "lblLengte";
             this.lblLengte.Size = new System.Drawing.Size(128, 21);
             this.lblLengte.TabIndex = 1;
-            this.lblLengte.Text = "Lengte";
+            this.lblLengte.Text = "Lengte (cm)";
             // 
             // lblPassword
             // 
@@ -191,7 +191,7 @@ namespace ErgometerApplication
             this.lblGewicht.Name = "lblPassword";
             this.lblGewicht.Size = new System.Drawing.Size(103, 21);
             this.lblGewicht.TabIndex = 0;
-            this.lblGewicht.Text = "Gewicht";
+            this.lblGewicht.Text = "Gewicht (kg)";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBike)).EndInit();
         }
 
