@@ -82,6 +82,9 @@ namespace ErgometerServer
                     case NetCommand.CommandType.UITLEG:
                         server.SendToDoctor(input);
                         break;
+                    case NetCommand.CommandType.TESTRESULT:
+                        FileHandler.SaveTestResult(input, session);
+                        break;
                     case NetCommand.CommandType.DATA:
                         if (loggedin)
                         {

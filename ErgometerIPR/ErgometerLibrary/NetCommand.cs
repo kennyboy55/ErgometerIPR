@@ -83,6 +83,8 @@ namespace ErgometerLibrary
             Type = CommandType.UITLEG;
             Session = session;
             Timestamp = Helper.Now;
+
+            UitlegText = uitlegtext;
         }
 
         //SESSIONDATA
