@@ -47,7 +47,11 @@ namespace ErgometerApplication
                         List<ErgometerLibrary.Meting> last10 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 10, 10);
                         int max = FindMaxValue(last10, x => x.HeartBeat);
                         int min = FindMinValue(last10, x => x.HeartBeat);
-                        if(max - min > 10) //Hartslag niet stabiel
+                        if(max + min < 20)
+                        {
+                            client.updateStepsText("We detecteren geen hartslag. Controleer of de hartslagmeter is verbonden.");
+                        }
+                        else if (max - min > 10) //Hartslag niet stabiel
                         {
                             client.updateStepsText("Uw hartslag is niet stabiel, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
                             return;
@@ -58,6 +62,13 @@ namespace ErgometerApplication
                             MainClient.SwitchTestModeAudio();
                             workloadStarted = MainClient.GetLastMeting().Seconds;
                             client.updateStepsText("De warmup is voltooid. U begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload.");
+                        }
+                    }
+                    if (MainClient.GetLastMeting().Seconds > 8 && MainClient.GetLastMeting().Seconds < 10)
+                    {
+                        if(MainClient.GetLastMeting().HeartBeat < 20)
+                        {
+                            client.updateStepsText("We detecteren geen hartslag. Controleer of de hartslagmeter is verbonden.");
                         }
                     }
                     break;

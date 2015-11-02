@@ -104,7 +104,6 @@ namespace ErgometerApplication
         {
             steps.setText(text);
             MainClient.SendNetCommand(new NetCommand(MainClient.Session, text));
-            Console.Beep(1200, 500);
         }
 
         public void CreateNewTest(char geslacht, int leeftijd, int gewicht, int lengte)
