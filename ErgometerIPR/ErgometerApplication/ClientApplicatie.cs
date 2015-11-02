@@ -31,7 +31,7 @@ namespace ErgometerApplication
 
         private void updateBeep(object sender, EventArgs e)
         {
-            MainClient.RPMBeatAudio();
+            Console.Beep(1000,5);
         }
         private void updateTimer_Tick(object sender, EventArgs e)
         {
@@ -103,6 +103,8 @@ namespace ErgometerApplication
         public void updateStepsText(string text)
         {
             steps.setText(text);
+            MainClient.SendNetCommand(new NetCommand(MainClient.Session, text));
+            Console.Beep(1200, 500);
         }
 
         public void CreateNewTest(char geslacht, int leeftijd, int gewicht, int lengte)
@@ -117,7 +119,7 @@ namespace ErgometerApplication
             MainClient.ComPort.Read();
             ergotest = new ErgometerTest(gewicht, lengte, leeftijd, geslacht, this);
             updateTimer.Start();
-            beeptimer.Start();
+            
         }
 
         private void buttonLogOff_Click(object sender, EventArgs e)
