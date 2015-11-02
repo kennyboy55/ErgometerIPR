@@ -127,11 +127,11 @@ namespace ErgometerApplication
             this.buttonLogOff.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.buttonLogOff.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonLogOff.Font = new System.Drawing.Font("Segoe UI Light", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonLogOff.Location = new System.Drawing.Point(722, 3);
+            this.buttonLogOff.Location = new System.Drawing.Point(652, 3);
             this.buttonLogOff.Name = "buttonLogOff";
-            this.buttonLogOff.Size = new System.Drawing.Size(75, 23);
+            this.buttonLogOff.Size = new System.Drawing.Size(130, 23);
             this.buttonLogOff.TabIndex = 1;
-            this.buttonLogOff.Text = "Afmelden";
+            this.buttonLogOff.Text = "Stoppen en Afmelden";
             this.buttonLogOff.UseVisualStyleBackColor = false;
             this.buttonLogOff.Click += new System.EventHandler(this.buttonLogOff_Click);
             // 

@@ -52,7 +52,8 @@ namespace ErgometerApplication
                     actualpower.updateValue(m.ActualPower);
                     time.updateValue(m.Seconds);
 
-                    ergotest.timerTick();
+                    if(ergotest != null)
+                        ergotest.timerTick();
                 }
                 else
                 {
@@ -79,7 +80,7 @@ namespace ErgometerApplication
                     if (connect)
                     {
                         panelGatherInfo.BringToFront();
-                        
+                        panelTopBar.Visible = true;
                         this.labelUsername.Text = panelLogin.textBoxUsername.Text;
                         
                     }
@@ -129,15 +130,21 @@ namespace ErgometerApplication
 
         private void logout(string message, System.Drawing.Color cl)
         {
-            panelLogin.BringToFront();
+            MainClient.Disconnect();
+            updateTimer.Stop();
+            beeptimer.Stop();
+
+            ergotest = null;
+            
             panelTopBar.Visible = false;
             panelLogin.lblVerification.Text = message;
             panelLogin.lblVerification.ForeColor = cl;
             panelLogin.lblVerification.Visible = true;
             panelLogin.textBoxUsername.Text = "";
             panelLogin.textBoxPassword.Text = "";
-            MainClient.Disconnect();
-            updateTimer.Stop();
+
+            panelLogin.BringToFront();
+
         }
     }
 }
