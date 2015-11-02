@@ -50,7 +50,7 @@ namespace ErgometerDoctorApplication
             this.energy = new PanelClientData("Energie", 0, 200);
             this.actualpower = new PanelClientData("Absolute Weerstand", 0, 400);
             this.time = new PanelClientData("Tijd", 0, 400);
-            this.steps = new ErgometerApplication.PanelClientSteps();
+            this.steps = new PanelClientSteps();
 
             this.panelClientContainer.SuspendLayout();
             this.panelTopBar.SuspendLayout();
@@ -158,7 +158,7 @@ namespace ErgometerDoctorApplication
         private System.Windows.Forms.Label labelUsername;
         private System.Windows.Forms.Label labelHallo;
         public PanelClientData heartBeat, RPM, speed, distance, power, energy, seconds, actualpower, time;
-        public ErgometerApplication.PanelClientSteps steps;
+        public PanelClientSteps steps;
 
         private void createTitle()
         {

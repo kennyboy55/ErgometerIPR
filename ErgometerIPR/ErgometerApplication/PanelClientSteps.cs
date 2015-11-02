@@ -30,6 +30,7 @@ namespace ErgometerApplication
             this.Location = new System.Drawing.Point(0, 0);
             this.Name = "PanelClientSteps";
             this.Size = new System.Drawing.Size(284, 150);
+            this.Resize += PanelClientSteps_Resize;
             // 
             // HeaderLabel
             // 
@@ -52,6 +53,18 @@ namespace ErgometerApplication
             this.UitlegText.MaximumSize = new System.Drawing.Size(400, 0);
             this.UitlegText.TabIndex = 2;
             this.UitlegText.Text = text;
+            this.UitlegText.TextChanged += UitlegText_TextChanged;
+        }
+
+        private void UitlegText_TextChanged(object sender, EventArgs e)
+        {
+            if (UitlegText.Size.Height + UitlegText.Location.Y + 10 > this.Size.Height)
+                this.Size = new System.Drawing.Size(this.Size.Width, UitlegText.Size.Height + UitlegText.Location.Y + 10);
+        }
+
+        private void PanelClientSteps_Resize(object sender, EventArgs e)
+        {
+            UitlegText.MaximumSize = new System.Drawing.Size(this.Size.Width - 20, 0);
         }
 
         public void setText(string text)
