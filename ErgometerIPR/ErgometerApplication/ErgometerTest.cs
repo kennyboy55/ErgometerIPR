@@ -47,8 +47,6 @@ namespace ErgometerApplication
                         List<ErgometerLibrary.Meting> last10 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 10, 10);
                         int max = FindMaxValue(last10, x => x.HeartBeat);
                         int min = FindMinValue(last10, x => x.HeartBeat);
-                        Console.WriteLine(max);
-                        Console.WriteLine(min);
                         if(max - min > 10) //Hartslag niet stabiel
                         {
                             client.updateStepsText("Uw hartslag is niet stabiel, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
