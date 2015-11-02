@@ -237,11 +237,21 @@ namespace ErgometerServer
             {
                 command = new NetCommand(NetCommand.CommandType.TESTRESULT, session);
                 BinaryReader reader = new BinaryReader(stream);
-                command.VO2Max = reader.ReadDouble();
-                command.MET = reader.ReadDouble();
-                command.PopulationAvg = reader.ReadDouble();
-                command.ZScore = reader.ReadDouble();
-                command.Rating = reader.ReadString();
+                try {
+                    command.VO2Max = reader.ReadDouble();
+                    command.MET = reader.ReadDouble();
+                    command.PopulationAvg = reader.ReadDouble();
+                    command.ZScore = reader.ReadDouble();
+                    command.Rating = reader.ReadString();
+                }
+                catch(Exception e)
+                {
+                    command.VO2Max = 0;
+                    command.MET = 0;
+                    command.PopulationAvg = 0;
+                    command.ZScore = 0;
+                    command.Rating = "Niet afgerond";
+                }
             }
 
             return command;
@@ -272,10 +282,16 @@ namespace ErgometerServer
             {
                 command = new NetCommand(NetCommand.CommandType.PERSONDATA, session);
                 BinaryReader reader = new BinaryReader(stream);
-                command.Geslacht = reader.ReadChar();
-                command.Gewicht = reader.ReadInt32();
-                command.Leeftijd = reader.ReadInt32();
-                command.Lengte = reader.ReadInt32();
+                try {
+                    command.Geslacht = reader.ReadChar();
+                    command.Gewicht = reader.ReadInt32();
+                    command.Leeftijd = reader.ReadInt32();
+                    command.Lengte = reader.ReadInt32();
+                }
+                catch (Exception e)
+                {
+                    command = new NetCommand(NetCommand.CommandType.ERROR, session);
+                }
             }
 
             return command;
