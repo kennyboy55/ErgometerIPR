@@ -82,6 +82,7 @@ namespace ErgometerApplication
                             currentstate = state.COOLINGDOWN;
                             MainClient.SwitchTestModeAudio();
                             client.updateStepsText("Uw hartslag heeft het kritieke punt bereikt, we beginnen nu aan de cooldown.");
+                            MainClient.ComPort.Write("PW 25");
                         }
 
                         int pw = GetWorkloadPower(GetCurrentWorkload());
@@ -108,7 +109,6 @@ namespace ErgometerApplication
                     }
                     break;
                 case state.COOLINGDOWN:
-                    MainClient.ComPort.Write("PW 25");
                     if(MainClient.GetLastMeting().Seconds - workloadStarted > 360)
                     {
                         currentstate = state.STOP;
