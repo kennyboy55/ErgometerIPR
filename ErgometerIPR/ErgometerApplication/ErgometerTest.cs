@@ -47,7 +47,11 @@ namespace ErgometerApplication
                         List<ErgometerLibrary.Meting> last10 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 10, 10);
                         int max = FindMaxValue(last10, x => x.HeartBeat);
                         int min = FindMinValue(last10, x => x.HeartBeat);
-                        if(max - min > 10) //Hartslag niet stabiel
+                        if (max + min < 20)
+                        {
+                            client.updateStepsText("We detecteren geen hartslag. Controleer of de hartslagmeter is verbonden.");
+                        }
+                        else if (max - min > 10) //Hartslag niet stabiel
                         {
                             client.updateStepsText("Uw hartslag is niet stabiel, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
                             return;
@@ -58,6 +62,13 @@ namespace ErgometerApplication
                             MainClient.SwitchTestModeAudio();
                             workloadStarted = MainClient.GetLastMeting().Seconds;
                             client.updateStepsText("De warmup is voltooid. U begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload.");
+                        }
+                    }
+                    if (MainClient.GetLastMeting().Seconds > 9 && MainClient.GetLastMeting().Seconds < 11)
+                    {
+                        if (MainClient.GetLastMeting().HeartBeat < 20)
+                        {
+                            client.updateStepsText("We detecteren geen hartslag. Controleer of de hartslagmeter is verbonden.");
                         }
                     }
                     break;
@@ -92,7 +103,7 @@ namespace ErgometerApplication
                         Console.WriteLine("2:40 gefiets, gemiddelde harstslag berekenen:" + workloadHearthbeat);
                         client.updateStepsText("U bent nu met de " + NumToText(GetCurrentWorkload()) + " workload bezig. Uw gemiddelde hartslag is berekend als " + workloadHearthbeat + "bpm.");
                     }
-                    else if(MainClient.GetLastMeting().Seconds - workloadStarted > 8 && MainClient.GetLastMeting().Seconds - workloadStarted < 10)
+                    else if(MainClient.GetLastMeting().Seconds - workloadStarted > 9 && MainClient.GetLastMeting().Seconds - workloadStarted < 11)
                     {
                         client.updateStepsText("U bent nu met de " + NumToText(GetCurrentWorkload()) + " workload bezig. De fiets staat nu ingesteld op " + MainClient.GetLastMeting().Power + " Watt");
                     }
@@ -104,7 +115,7 @@ namespace ErgometerApplication
                         MainClient.SwitchTestModeAudio();
                         client.updateStepsText("De test is afgelopen.");
                     }
-                    else if(MainClient.GetLastMeting().Seconds - workloadStarted > 8 && MainClient.GetLastMeting().Seconds - workloadStarted < 10)
+                    else if(MainClient.GetLastMeting().Seconds - workloadStarted > 9 && MainClient.GetLastMeting().Seconds - workloadStarted < 11)
                     {
                         client.updateStepsText("U bent momenteel met de cooldown bezig.");
                     }
