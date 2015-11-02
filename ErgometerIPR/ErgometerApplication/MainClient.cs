@@ -47,6 +47,25 @@ namespace ErgometerApplication
             Client = client;
         }
 
+        public static void RPMBeatAudio()
+        {
+            Console.Beep(1000, 5);
+        }
+
+        public static void SwitchWorkloadAudio()
+        {
+            Console.Beep(1000, 200);
+            Console.Beep(1100, 200);
+            Console.Beep(1200, 100);
+        }
+
+        public static void SwitchTestModeAudio()
+        {
+            Console.Beep(1000, 200);
+            Console.Beep(900, 200);
+            Console.Beep(800, 100);
+        }
+
         public static bool Connect(string comport, string name, string password, out string error)
         {
             error = "Succes";
