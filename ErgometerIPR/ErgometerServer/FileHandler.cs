@@ -82,6 +82,8 @@ namespace ErgometerServer
             string json = File.ReadAllText(GetSessionMetingen(session));
 
             List<Meting> metingen = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Meting>>(json);
+            if (metingen == null)
+                metingen = new List<Meting>();
             Console.WriteLine("Reading metingen: " + GetSessionMetingen(session));
             return metingen;
         }
@@ -148,6 +150,8 @@ namespace ErgometerServer
             string json = File.ReadAllText(GetSessionChat(session));
 
             List<ChatMessage> chat = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ChatMessage>>(json);
+            if (chat == null)
+                chat = new List<ChatMessage>();
             return chat;
         }
 
