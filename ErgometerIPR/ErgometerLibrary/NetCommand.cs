@@ -49,6 +49,20 @@ namespace ErgometerLibrary
             Session = session;
             Timestamp = Helper.Now;
         }
+        
+        //TESTRESULT
+        public NetCommand(double vo2max, double met, double populationavg, double zscore, string rating, int session)
+        {
+            Type = CommandType.TESTRESULT;
+            Session = session;
+            Timestamp = Helper.Now;
+
+            VO2Max = vo2max;
+            MET = met;
+            PopulationAvg = populationavg;
+            ZScore = zscore;
+            Rating = rating;
+        }
 
         //PERSONDATA
         public NetCommand(int gewicht, int lengte, int leeftijd, char geslacht, int session)
@@ -233,9 +247,21 @@ namespace ErgometerLibrary
                     return ParseUitleg(session, args);
                 case 14:
                     return ParsePersonData(session, args);
+                case 15:
+                    return ParseTestResult(session, args);
                 default:
                     throw new FormatException("Error in NetCommand: " + comType + " is not a valid command type.");
             }
+        }
+
+        private static NetCommand ParseTestResult(int session, string[] args)
+        {
+            if (args.Length != 5)
+                throw new MissingFieldException("Error in NetCommand: TestResult is missing arguments");
+
+            NetCommand temp = new NetCommand(double.Parse(args[0]), double.Parse(args[1]), double.Parse(args[2]), double.Parse(args[3]), args[4], session);
+
+            return temp;
         }
 
         private static NetCommand ParsePersonData(int session, string[] args)
@@ -472,6 +498,9 @@ namespace ErgometerLibrary
                     break;
                 case CommandType.PERSONDATA:
                     command += "13»ses" + Session + "»" + Gewicht + "»" + Lengte + "»" + Leeftijd + "»" + Geslacht;
+                    break;
+                case CommandType.TESTRESULT:
+                    command += "13»ses" + Session + "»" + VO2Max + "»" + MET + "»" + PopulationAvg + "»" + ZScore + "»" + Rating;
                     break;
                 case CommandType.ERROR:
                     command += "ERROR IN NETCOMMAND";
