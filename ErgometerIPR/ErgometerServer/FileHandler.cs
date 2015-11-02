@@ -215,9 +215,9 @@ namespace ErgometerServer
 
         // TESTRESULTS
 
-        public static void SaveTestResult(NetCommand input, int session)
+        public static void SaveTestResult(NetCommand input)
         {
-            using (Stream stream = File.Open(GetSessionTest(session), FileMode.Open))
+            using (Stream stream = File.Open(GetSessionTest(input.Session), FileMode.Open))
             {
                 BinaryWriter writer = new BinaryWriter(stream);
                 writer.Write(input.VO2Max);
@@ -251,9 +251,9 @@ namespace ErgometerServer
 
         // PERSONALDATA
 
-        public static void SavePersonalData(NetCommand input, int session)
+        public static void SavePersonalData(NetCommand input)
         {
-            using (Stream stream = File.Open(GetSessionPersonalData(session), FileMode.Open))
+            using (Stream stream = File.Open(GetSessionPersonalData(input.Session), FileMode.Open))
             {
                 BinaryWriter writer = new BinaryWriter(stream);
                 writer.Write(input.Geslacht);

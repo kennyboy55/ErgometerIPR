@@ -96,6 +96,14 @@ namespace ErgometerServer
                                     Thread.Sleep(10);
                                 }
                                 break;
+                            case NetCommand.RequestType.PERSONALDATA:
+                                NetCommand response = FileHandler.ReadPersonalData(input.Session);
+                                sendToDoctor(response);
+                                break;
+                            case NetCommand.RequestType.TESTRESULT:
+                                NetCommand resp = FileHandler.ReadTestResult(input.Session);
+                                sendToDoctor(resp);
+                                break;
                             default:
                                 throw new FormatException("Unknown Command");
                         }

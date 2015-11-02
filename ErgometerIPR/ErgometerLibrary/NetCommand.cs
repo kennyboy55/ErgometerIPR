@@ -10,7 +10,7 @@ namespace ErgometerLibrary
     public class NetCommand
     {
         public enum CommandType { LOGIN, DATA, CHAT, LOGOUT, SESSION, VALUESET, USER, RESPONSE, REQUEST, LENGTH, SESSIONDATA, ERROR, BROADCAST, UITLEG, PERSONDATA, TESTRESULT}
-        public enum RequestType { USERS, ALLSESSIONS, OLDDATA, SESSIONDATA, CHAT }
+        public enum RequestType { USERS, ALLSESSIONS, OLDDATA, SESSIONDATA, CHAT, PERSONALDATA, TESTRESULT }
         public enum ResponseType { LOGINOK, LOGINWRONG, ERROR, NOTLOGGEDIN }
         public enum ValueType { TIME, POWER, ENERGY, DISTANCE }
         public enum LengthType { USERS, SESSIONS, SESSIONDATA, DATA }
@@ -343,6 +343,10 @@ namespace ErgometerLibrary
                     return new NetCommand(RequestType.SESSIONDATA, session);
                 case "chat":
                     return new NetCommand(RequestType.CHAT, session);
+                case "personaldata":
+                    return new NetCommand(RequestType.PERSONALDATA, session);
+                case "testresult":
+                    return new NetCommand(RequestType.TESTRESULT, session);
                 default:
                     throw new FormatException("Error in NetCommand: Request type not recognised");
             }
@@ -499,19 +503,20 @@ namespace ErgometerLibrary
                     command += "13»ses" + Session + "»" + UitlegText.Replace('\n', '«');
                     break;
                 case CommandType.PERSONDATA:
-                    command += "13»ses" + Session + "»" + Gewicht + "»" + Lengte + "»" + Leeftijd + "»" + Geslacht;
+                    command += "14»ses" + Session + "»" + Gewicht + "»" + Lengte + "»" + Leeftijd + "»" + Geslacht;
+                    Console.WriteLine(command);
                     break;
                 case CommandType.TESTRESULT:
-                    command += "13»ses" + Session + "»" + VO2Max + "»" + MET + "»" + PopulationAvg + "»" + ZScore + "»" + Rating;
+                    command += "15»ses" + Session + "»" + VO2Max + "»" + MET + "»" + PopulationAvg + "»" + ZScore + "»" + Rating;
                     break;
                 case CommandType.ERROR:
                     command += "ERROR IN NETCOMMAND";
                     break;
-
                 default:
                     throw new FormatException("Error in NetCommand: Cannot find type of command");
             }
 
+            
             return command;
         }
     }

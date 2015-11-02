@@ -20,6 +20,7 @@ namespace ErgometerServer
 
         bool running;
         bool loggedin;
+        public bool personaldatareceived;
 
         List<Meting> metingen;
         List<ChatMessage> chat;
@@ -32,6 +33,7 @@ namespace ErgometerServer
             this.session = 0;
             this.running = false;
             this.loggedin = false;
+            this.personaldatareceived = false;
 
             metingen = new List<Meting>();
             chat = new List<ChatMessage>();
@@ -88,13 +90,14 @@ namespace ErgometerServer
                     case NetCommand.CommandType.PERSONDATA:
                         if (loggedin)
                         {
-                            FileHandler.SavePersonalData(input, session);
+                            personaldatareceived = true;
+                            FileHandler.SavePersonalData(input);
                         }
                         break;
                     case NetCommand.CommandType.TESTRESULT:
                         if (loggedin)
                         {
-                            FileHandler.SaveTestResult(input, session);
+                            FileHandler.SaveTestResult(input);
                         }
                         break;
                     case NetCommand.CommandType.DATA:

@@ -112,6 +112,7 @@ namespace ErgometerApplication
             panelTopBar.Visible = true;
             panelClientContainer.BringToFront();
             chat = panelClientChat;
+            MainClient.SendNetCommand(new NetCommand(gewicht, lengte, leeftijd, geslacht, MainClient.Session));
             MainClient.ComPort.Write("RS");
             MainClient.ComPort.Read();
             Thread.Sleep(200);

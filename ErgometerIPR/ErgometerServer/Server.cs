@@ -122,7 +122,8 @@ namespace ErgometerServer
             List<int> sessions = new List<int>();
             foreach (ClientThread thread in clients)
             {
-                sessions.Add(thread.session);
+                if(thread.personaldatareceived)
+                    sessions.Add(thread.session);
             }
             return sessions;
         }
@@ -132,7 +133,8 @@ namespace ErgometerServer
             List<Tuple<int, string>> sessions = new List<Tuple<int, string>>();
             foreach (ClientThread thread in clients)
             {
-                sessions.Add(new Tuple<int, string>(thread.session, thread.name));
+                if (thread.personaldatareceived)
+                    sessions.Add(new Tuple<int, string>(thread.session, thread.name));
             }
             return sessions;
         }

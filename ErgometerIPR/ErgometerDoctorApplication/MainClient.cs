@@ -253,15 +253,15 @@ namespace ErgometerDoctorApplication
             Thread thread = new Thread(new ThreadStart(cl.run));
             thread.IsBackground = true;
             thread.Start();
+
+            Thread.Sleep(5);
+            SendNetCommand(new NetCommand(NetCommand.RequestType.PERSONALDATA, session));
         }
 
         public static void StartOldClient(string name, int session)
         {
             if (IsSessionRunning(session))
                 return;
-
-            SendNetCommand(new NetCommand(NetCommand.RequestType.OLDDATA, session));
-            SendNetCommand(new NetCommand(NetCommand.RequestType.CHAT, session));
 
             //Start new client
             ClientThread cl = new ClientThread(name, session, true);
@@ -271,6 +271,15 @@ namespace ErgometerDoctorApplication
             Thread thread = new Thread(new ThreadStart(cl.run));
             thread.IsBackground = true;
             thread.Start();
+
+            SendNetCommand(new NetCommand(NetCommand.RequestType.OLDDATA, session));
+            Thread.Sleep(5);
+            SendNetCommand(new NetCommand(NetCommand.RequestType.CHAT, session));
+            Thread.Sleep(5);
+            SendNetCommand(new NetCommand(NetCommand.RequestType.PERSONALDATA, session));
+            Thread.Sleep(5);
+            SendNetCommand(new NetCommand(NetCommand.RequestType.TESTRESULT, session));
+            Thread.Sleep(5);
         }
     }
 }

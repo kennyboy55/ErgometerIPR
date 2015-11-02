@@ -57,6 +57,16 @@ namespace ErgometerDoctorApplication
                 case NetCommand.CommandType.UITLEG:
                     window.steps.UitlegText.Invoke((MethodInvoker)(() => window.steps.UitlegText.Text = command.UitlegText));
                     break;
+                case NetCommand.CommandType.PERSONDATA:
+                    window.panelClientChat.Invoke(window.panelClientChat.passChatMessage, new Object[] { new ChatMessage("Test", "DATA Gewicht=" + command.Gewicht + " Geslacht=" + command.Geslacht + " Leeftijd=" + command.Leeftijd + " Lengte=" + command.Lengte + ".", false) });
+                    Console.WriteLine("Not fully implemented");
+                    //NOG DOEN
+                    break;
+                case NetCommand.CommandType.TESTRESULT:
+                    window.panelClientChat.Invoke(window.panelClientChat.passChatMessage, new Object[] { new ChatMessage("Test", "DATA Vo2Max=" + command.VO2Max + " MET=" + command.MET + " PopulationAvg=" + command.PopulationAvg + " Zscore=" + command.ZScore + " Rating=" + command.Rating + ".", false) });
+                    Console.WriteLine("Not fully implemented");
+                    //NOG DOEN
+                    break;
             }
         }
 
