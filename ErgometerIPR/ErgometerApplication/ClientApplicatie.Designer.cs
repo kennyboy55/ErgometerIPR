@@ -178,7 +178,7 @@ namespace ErgometerApplication
         }
 
         #endregion
-        private System.Windows.Forms.Timer updateTimer;
+        public System.Windows.Forms.Timer updateTimer;
         public Timer beeptimer;
         private System.Windows.Forms.Panel panelClientContainer;
         private PanelClientChat panelClientChat;

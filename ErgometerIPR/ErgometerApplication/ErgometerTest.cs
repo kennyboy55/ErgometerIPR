@@ -120,6 +120,12 @@ namespace ErgometerApplication
                         client.updateStepsText("U bent momenteel met de cooldown bezig.");
                     }
                     break;
+                case state.STOP:
+                    MainClient.Client.updateTimer.Stop();
+                    MainClient.ComPort.Write("RS");
+                    MainClient.Client.updateStepsText(String.Format("De test is afgelopen. Uw test resultaten zijn: \n VO2MAX: {0} MET: {1} Gemiddelde: {3} \n {4} ", CalculateVOMax(), CalculateMET(), CalculatePopulationAverage(), CalculateRating()));
+                    MainClient.SendNetCommand(new ErgometerLibrary.NetCommand(CalculateVOMax(), CalculateMET(), CalculatePopulationAverage(), CalculateZScore(), CalculateRating(), MainClient.Session));
+                    break;
             }
         }
 
@@ -220,10 +226,15 @@ namespace ErgometerApplication
             return 41.435 - 0.23 * age;
         }
 
-        public string CalculateRating()
+        public double CalculateZScore()
         {
             var dev = (gender == 'M') ? 6 : 5.5;
-            var Zscore = (CalculateVOMax() - CalculatePopulationAverage()) / dev;
+            return (CalculateVOMax() - CalculatePopulationAverage()) / dev;
+        }
+
+        public string CalculateRating()
+        {
+            var Zscore = CalculateZScore();
             if (Zscore >= 1)
             {
                 return "Geweldig";
