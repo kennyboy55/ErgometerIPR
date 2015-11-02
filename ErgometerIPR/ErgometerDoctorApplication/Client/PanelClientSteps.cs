@@ -48,6 +48,7 @@ namespace ErgometerApplication
             this.UitlegText.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.UitlegText.Location = new System.Drawing.Point(12, 35);
             this.UitlegText.Name = "UitlegText";
+            this.UitlegText.MaximumSize = new System.Drawing.Size(400, 0);
             this.UitlegText.Size = new System.Drawing.Size(800, 32);
             this.UitlegText.TabIndex = 2;
             this.UitlegText.Text = text;

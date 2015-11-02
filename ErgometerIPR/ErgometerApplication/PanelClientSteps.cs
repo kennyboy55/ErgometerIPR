@@ -49,6 +49,7 @@ namespace ErgometerApplication
             this.UitlegText.Location = new System.Drawing.Point(12, 35);
             this.UitlegText.Name = "UitlegText";
             this.UitlegText.Size = new System.Drawing.Size(800, 32);
+            this.UitlegText.MaximumSize = new System.Drawing.Size(400, 0);
             this.UitlegText.TabIndex = 2;
             this.UitlegText.Text = text;
         }

@@ -55,7 +55,7 @@ namespace ErgometerDoctorApplication
                     window.panelClientChat.Invoke(window.panelClientChat.passChatMessage, new Object[] { chat });
                     break;
                 case NetCommand.CommandType.UITLEG:
-                    window.updateStepsText(command.UitlegText);
+                    window.steps.UitlegText.Invoke((MethodInvoker)(() => window.steps.UitlegText.Text = command.UitlegText));
                     break;
             }
         }
