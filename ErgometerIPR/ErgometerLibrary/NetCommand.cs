@@ -9,7 +9,7 @@ namespace ErgometerLibrary
 {
     public class NetCommand
     {
-        public enum CommandType { LOGIN, DATA, CHAT, LOGOUT, SESSION, VALUESET, USER, RESPONSE, REQUEST, LENGTH, SESSIONDATA, ERROR, BROADCAST }
+        public enum CommandType { LOGIN, DATA, CHAT, LOGOUT, SESSION, VALUESET, USER, RESPONSE, REQUEST, LENGTH, SESSIONDATA, ERROR, BROADCAST, UITLEG, PERSONDATA, TESTRESULT}
         public enum RequestType { USERS, ALLSESSIONS, OLDDATA, SESSIONDATA, CHAT }
         public enum ResponseType { LOGINOK, LOGINWRONG, ERROR, NOTLOGGEDIN }
         public enum ValueType { TIME, POWER, ENERGY, DISTANCE }
@@ -27,13 +27,46 @@ namespace ErgometerLibrary
         public bool IsDoctor { get; set; }
         public string Password { get; set; }
         public string ChatMessage { get; set; }
+        public string UitlegText { get; set; }
         public Meting Meting { get; set; }
         public int LengthValue { get; set; }
+
+        public int Gewicht { get; set; }
+        public int Lengte { get; set; }
+        public char Geslacht { get; set; }
+        public int Leeftijd { get; set; }
+
+        public double VO2Max { get; set; }
+        public double MET { get; set; }
+        public double PopulationAvg { get; set; }
+        public double ZScore { get; set; }
+        public string Rating { get; set; }
 
         //SESSION
         public NetCommand(int session)
         {
             Type = CommandType.SESSION;
+            Session = session;
+            Timestamp = Helper.Now;
+        }
+
+        //PERSONDATA
+        public NetCommand(int gewicht, int lengte, int leeftijd, char geslacht, int session)
+        {
+            Type = CommandType.PERSONDATA;
+            Session = session;
+            Timestamp = Helper.Now;
+
+            Gewicht = gewicht;
+            Lengte = lengte;
+            Leeftijd = leeftijd;
+            Geslacht = geslacht;
+        }
+
+        //UITLEG
+        public NetCommand(int session, string uitlegtext)
+        {
+            Type = CommandType.UITLEG;
             Session = session;
             Timestamp = Helper.Now;
         }
@@ -196,9 +229,33 @@ namespace ErgometerLibrary
                     return ParseSessionData(session, args);
                 case 12:
                     return ParseBroadcast(session, args);
+                case 13:
+                    return ParseUitleg(session, args);
+                case 14:
+                    return ParsePersonData(session, args);
                 default:
                     throw new FormatException("Error in NetCommand: " + comType + " is not a valid command type.");
             }
+        }
+
+        private static NetCommand ParsePersonData(int session, string[] args)
+        {
+            if (args.Length != 4)
+                throw new MissingFieldException("Error in NetCommand: PersonData is missing arguments");
+
+            NetCommand temp = new NetCommand(int.Parse(args[0]), int.Parse(args[1]), int.Parse(args[2]), char.Parse(args[3]), session);
+
+            return temp;
+        }
+
+        private static NetCommand ParseUitleg(int session, string[] args)
+        {
+            if (args.Length != 1)
+                throw new MissingFieldException("Error in NetCommand: Uitleg is missing arguments");
+
+            NetCommand temp = new NetCommand(session, args[0].Replace('«', '\n'));
+
+            return temp;
         }
 
         private static NetCommand ParseBroadcast(int session, string[] args)
@@ -409,6 +466,12 @@ namespace ErgometerLibrary
                     break;
                 case CommandType.BROADCAST:
                     command += "12»ses" + Session + "»" + ChatMessage;
+                    break;
+                case CommandType.UITLEG:
+                    command += "13»ses" + Session + "»" + UitlegText.Replace('\n', '«');
+                    break;
+                case CommandType.PERSONDATA:
+                    command += "13»ses" + Session + "»" + Gewicht + "»" + Lengte + "»" + Leeftijd + "»" + Geslacht;
                     break;
                 case CommandType.ERROR:
                     command += "ERROR IN NETCOMMAND";
