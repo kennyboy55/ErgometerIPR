@@ -62,6 +62,9 @@
     <Compile Include="Client\PanelClientData.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Client\PanelClientSteps.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Client\PanelGraphView.cs">
       <SubType>Component</SubType>
     </Compile>

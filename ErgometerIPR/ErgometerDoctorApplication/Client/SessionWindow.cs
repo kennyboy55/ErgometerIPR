@@ -41,13 +41,17 @@ namespace ErgometerDoctorApplication
             updateGraph = new UpdateGraph(this.LoadGraph);
 
             InitializeComponent();
-
             if(! ActiveSession)
             {
                 panelClientChat.richTextBox1.Enabled = false;
                 panelClientChat.button1.Enabled = false;
                 panelDataViewLeft.Visible = false;
             }
+        }
+
+        public void updateStepsText(string text)
+        {
+            steps.setText(text);
         }
 
         public void ClientApplicatie_Resize(object sender, EventArgs e)
