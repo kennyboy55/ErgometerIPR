@@ -79,6 +79,9 @@ namespace ErgometerServer
                             }
                         }
                         break;
+                    case NetCommand.CommandType.UITLEG:
+                        server.SendToDoctor(input);
+                        break;
                     case NetCommand.CommandType.DATA:
                         if (loggedin)
                         {

@@ -84,6 +84,11 @@ namespace ErgometerServer
             return metingen;
         }
 
+        internal static void SaveTestResult(NetCommand input, int session)
+        {
+            throw new NotImplementedException();
+        }
+
         public static List<Tuple<int, string, double>> GetAllSessions()
         {
             string[] directories = Directory.GetDirectories(DataFolder);
