@@ -54,6 +54,8 @@ namespace ErgometerServer
             using (File.Create(Path.Combine(GetSessionFile(session)))) ;
             using (File.Create(Path.Combine(GetSessionMetingen(session)))) ;
             using (File.Create(Path.Combine(GetSessionChat(session)))) ;
+            using (File.Create(Path.Combine(GetSessionTest(session)))) ;
+            using (File.Create(Path.Combine(GetSessionPersonalData(session)))) ;
 
             File.WriteAllText(GetSessionFile(session), naam + Environment.NewLine + Helper.Now);
             Console.WriteLine("Created session at " + Helper.MillisecondsToTime(Helper.Now));
@@ -82,11 +84,6 @@ namespace ErgometerServer
             List<Meting> metingen = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Meting>>(json);
             Console.WriteLine("Reading metingen: " + GetSessionMetingen(session));
             return metingen;
-        }
-
-        internal static void SaveTestResult(NetCommand input, int session)
-        {
-            throw new NotImplementedException();
         }
 
         public static List<Tuple<int, string, double>> GetAllSessions()
@@ -170,6 +167,14 @@ namespace ErgometerServer
         {
             return Path.Combine(DataFolder, session.ToString(), "chat.ergo");
         }
+        private static string GetSessionTest(int session)
+        {
+            return Path.Combine(DataFolder, session.ToString(), "testresult.ergo");
+        }
+        private static string GetSessionPersonalData(int session)
+        {
+            return Path.Combine(DataFolder, session.ToString(), "personal.ergo");
+        }
 
         //USER MANAGEMENT
         public static Dictionary<string, string> LoadUsers()
@@ -204,6 +209,76 @@ namespace ErgometerServer
                 }
                 writer.Flush();
             }
+        }
+
+
+
+        // TESTRESULTS
+
+        public static void SaveTestResult(NetCommand input, int session)
+        {
+            using (Stream stream = File.Open(GetSessionTest(session), FileMode.Open))
+            {
+                BinaryWriter writer = new BinaryWriter(stream);
+                writer.Write(input.VO2Max);
+                writer.Write(input.MET);
+                writer.Write(input.PopulationAvg);
+                writer.Write(input.ZScore);
+                writer.Write(input.Rating);
+                writer.Flush();
+            }
+        }
+
+        public static NetCommand ReadTestResult(int session)
+        {
+            NetCommand command = new NetCommand(NetCommand.CommandType.ERROR, session);
+
+            using (Stream stream = File.Open(GetSessionTest(session), FileMode.Open))
+            {
+                command = new NetCommand(NetCommand.CommandType.TESTRESULT, session);
+                BinaryReader reader = new BinaryReader(stream);
+                command.VO2Max = reader.ReadDouble();
+                command.MET = reader.ReadDouble();
+                command.PopulationAvg = reader.ReadDouble();
+                command.ZScore = reader.ReadDouble();
+                command.Rating = reader.ReadString();
+            }
+
+            return command;
+        }
+
+
+
+        // PERSONALDATA
+
+        public static void SavePersonalData(NetCommand input, int session)
+        {
+            using (Stream stream = File.Open(GetSessionPersonalData(session), FileMode.Open))
+            {
+                BinaryWriter writer = new BinaryWriter(stream);
+                writer.Write(input.Geslacht);
+                writer.Write(input.Gewicht);
+                writer.Write(input.Leeftijd);
+                writer.Write(input.Lengte);
+                writer.Flush();
+            }
+        }
+
+        public static NetCommand ReadPersonalData(int session)
+        {
+            NetCommand command = new NetCommand(NetCommand.CommandType.ERROR, session);
+
+            using (Stream stream = File.Open(GetSessionPersonalData(session), FileMode.Open))
+            {
+                command = new NetCommand(NetCommand.CommandType.PERSONDATA, session);
+                BinaryReader reader = new BinaryReader(stream);
+                command.Geslacht = reader.ReadChar();
+                command.Gewicht = reader.ReadInt32();
+                command.Leeftijd = reader.ReadInt32();
+                command.Lengte = reader.ReadInt32();
+            }
+
+            return command;
         }
     }
 }
