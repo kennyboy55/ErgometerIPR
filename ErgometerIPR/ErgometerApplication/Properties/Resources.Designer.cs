@@ -10,8 +10,9 @@
 
 namespace ErgometerApplication.Properties {
     using System;
-    
-    
+    using System.Drawing;
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -27,7 +28,7 @@ namespace ErgometerApplication.Properties {
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
@@ -66,6 +67,30 @@ namespace ErgometerApplication.Properties {
         internal static System.Drawing.Bitmap flatbike {
             get {
                 object obj = ResourceManager.GetObject("flatbike", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        internal static System.Drawing.Bitmap up
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("up", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        internal static System.Drawing.Bitmap down
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("down", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        internal static System.Drawing.Bitmap stay
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("stay", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
