@@ -71,7 +71,7 @@ namespace ErgometerApplication
             this.pictureBoxBike.Name = "pictureBoxBike";
             this.pictureBoxBike.Size = new System.Drawing.Size(250, 250);
             this.pictureBoxBike.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBoxBike.TabIndex = 4;
+            this.pictureBoxBike.TabIndex = 10;
             this.pictureBoxBike.TabStop = false;
             // 
             // buttonLogin
@@ -82,7 +82,7 @@ namespace ErgometerApplication
             this.buttonStart.Location = new System.Drawing.Point(468, 420);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(168, 31);
-            this.buttonStart.TabIndex = 3;
+            this.buttonStart.TabIndex = 5;
             this.buttonStart.Text = "Start Test";
             this.buttonStart.UseVisualStyleBackColor = true;
             this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
@@ -106,7 +106,7 @@ namespace ErgometerApplication
             this.textBoxGewicht.MaxLength = 16;
             this.textBoxGewicht.Name = "textBoxGewicht";
             this.textBoxGewicht.Size = new System.Drawing.Size(167, 20);
-            this.textBoxGewicht.TabIndex = 2;
+            this.textBoxGewicht.TabIndex = 4;
             this.textBoxGewicht.KeyDown += TextBox_KeyDown;
             this.textBoxGewicht.Text = rand.Next(50, 120) + "";
             // 
@@ -117,7 +117,7 @@ namespace ErgometerApplication
             this.textBoxLengte.MaxLength = 16;
             this.textBoxLengte.Name = "textBoxLengte";
             this.textBoxLengte.Size = new System.Drawing.Size(167, 20);
-            this.textBoxLengte.TabIndex = 2;
+            this.textBoxLengte.TabIndex = 3;
             this.textBoxLengte.KeyDown += TextBox_KeyDown;
             this.textBoxLengte.Text = rand.Next(150, 210) + "";
             // 
@@ -128,7 +128,7 @@ namespace ErgometerApplication
             this.comboBoxGeslacht.MaxLength = 16;
             this.comboBoxGeslacht.Name = "textBoxLengte";
             this.comboBoxGeslacht.Size = new System.Drawing.Size(167, 20);
-            this.comboBoxGeslacht.TabIndex = 2;
+            this.comboBoxGeslacht.TabIndex = 1;
             this.comboBoxGeslacht.Items.AddRange(new object[] { "Man", "Vrouw" });
             this.comboBoxGeslacht.SelectedIndex = 0;
             // 
@@ -140,7 +140,7 @@ namespace ErgometerApplication
             this.lblInfoTitel.Location = new System.Drawing.Point(461, 141);
             this.lblInfoTitel.Name = "lblLoginTitle";
             this.lblInfoTitel.Size = new System.Drawing.Size(87, 32);
-            this.lblInfoTitel.TabIndex = 1;
+            this.lblInfoTitel.TabIndex = 10;
             this.lblInfoTitel.Text = "Vul je gegevens in";
             // 
             // lblVerification
@@ -152,7 +152,7 @@ namespace ErgometerApplication
             this.lblFeedback.Name = "lvlVerification";
             this.lblFeedback.Size = new System.Drawing.Size(200, 21);
             this.lblFeedback.ForeColor = System.Drawing.Color.Red;
-            this.lblFeedback.TabIndex = 1;
+            this.lblFeedback.TabIndex = 10;
             this.lblFeedback.Text = "";
             // 
             // lblUsername
@@ -163,7 +163,7 @@ namespace ErgometerApplication
             this.lblGeslacht.Location = new System.Drawing.Point(464, 180);
             this.lblGeslacht.Name = "lblUsername";
             this.lblGeslacht.Size = new System.Drawing.Size(128, 21);
-            this.lblGeslacht.TabIndex = 1;
+            this.lblGeslacht.TabIndex = 10;
             this.lblGeslacht.Text = "Geslacht";
             // 
             // lblUsername
@@ -174,7 +174,7 @@ namespace ErgometerApplication
             this.lblLeeftijd.Location = new System.Drawing.Point(464, 240);
             this.lblLeeftijd.Name = "lblUsername";
             this.lblLeeftijd.Size = new System.Drawing.Size(128, 21);
-            this.lblLeeftijd.TabIndex = 1;
+            this.lblLeeftijd.TabIndex = 10;
             this.lblLeeftijd.Text = "Leeftijd";
             // 
             // lblUsername
@@ -185,7 +185,7 @@ namespace ErgometerApplication
             this.lblLengte.Location = new System.Drawing.Point(464, 300);
             this.lblLengte.Name = "lblLengte";
             this.lblLengte.Size = new System.Drawing.Size(128, 21);
-            this.lblLengte.TabIndex = 1;
+            this.lblLengte.TabIndex = 10;
             this.lblLengte.Text = "Lengte (cm)";
             // 
             // lblPassword
@@ -196,7 +196,7 @@ namespace ErgometerApplication
             this.lblGewicht.Location = new System.Drawing.Point(464, 360);
             this.lblGewicht.Name = "lblPassword";
             this.lblGewicht.Size = new System.Drawing.Size(103, 21);
-            this.lblGewicht.TabIndex = 0;
+            this.lblGewicht.TabIndex = 10;
             this.lblGewicht.Text = "Gewicht (kg)";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBike)).EndInit();
         }
