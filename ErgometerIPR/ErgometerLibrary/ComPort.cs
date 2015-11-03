@@ -24,7 +24,8 @@ namespace ErgometerLibrary
             comPort.Parity = Parity.None;
             comPort.StopBits = StopBits.One;
             comPort.BaudRate = 9600;
-            comPort.ReadTimeout = 1500;
+            comPort.ReadTimeout = 200;
+            comPort.WriteTimeout = 350;
             try {
                 comPort.Open();
             }
@@ -54,7 +55,15 @@ namespace ErgometerLibrary
         {
             if (IsOpen())
             {
-                comPort.WriteLine(input);
+                
+                try
+                {
+                    comPort.WriteLine(input);
+                }
+                catch (TimeoutException)
+                {
+                  
+                }
             }
         }
 

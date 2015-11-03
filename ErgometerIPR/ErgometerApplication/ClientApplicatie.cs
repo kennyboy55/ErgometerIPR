@@ -74,7 +74,13 @@ namespace ErgometerApplication
                     if (SerialPort.GetPortNames().Length > 0)
                     {
                         string error = "";
-                        bool connect = MainClient.Connect(SerialPort.GetPortNames()[0], username, password, out error);
+                        bool connect = false;
+                        foreach(string comport in SerialPort.GetPortNames())
+                        {
+                            connect = MainClient.Connect(comport, username, password, out error);
+                            if (connect)
+                                break;
+                        }
 
                         if (connect)
                         {
