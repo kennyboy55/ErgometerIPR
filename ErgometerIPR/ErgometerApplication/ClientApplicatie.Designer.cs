@@ -46,13 +46,10 @@ namespace ErgometerApplication
             this.labelHallo = new System.Windows.Forms.Label();
 
             this.heartBeat = new PanelClientData("Hartslag", 50, 220);
-            this.RPM = new PanelClientData("RPM", 0, 120);
-            this.speed = new PanelClientData("Snelheid", 0, 50);
-            this.distance = new PanelClientData("Afstand (km)", 0, 100);
+            this.RPM = new PanelClientData("RPM", 30, 70);
             this.power = new PanelClientData("Weerstand", 25, 400);
-            this.energy = new PanelClientData("Energie", 0, 200);
-            this.actualpower = new PanelClientData("Absolute Weerstand", 0, 400);
-            this.time = new PanelClientData("Tijd", 0, 400);
+            this.actualpower = new PanelClientData("Huidige Weerstand", 0, 400);
+            this.time = new PanelClientData("Tijd", 0, 0);
             this.steps = new PanelClientSteps();
 
             this.panelClientContainer.SuspendLayout();
@@ -88,13 +85,11 @@ namespace ErgometerApplication
             this.panelDataViewLeft.Size = new System.Drawing.Size(18, 600);
             this.panelDataViewLeft.TabIndex = 3;
             this.panelDataViewLeft.BackColor = System.Drawing.Color.Gray;
-            this.panelDataViewLeft.Controls.Add(heartBeat);
-            this.panelDataViewLeft.Controls.Add(RPM);
-            this.panelDataViewLeft.Controls.Add(speed);
-            this.panelDataViewLeft.Controls.Add(distance);
+            
             this.panelDataViewLeft.Controls.Add(power);
-            this.panelDataViewLeft.Controls.Add(energy);
             this.panelDataViewLeft.Controls.Add(actualpower);
+            this.panelDataViewLeft.Controls.Add(RPM);
+            this.panelDataViewLeft.Controls.Add(heartBeat);
             this.panelDataViewLeft.Controls.Add(steps);
             this.panelDataViewLeft.Controls.Add(time);
 
@@ -189,7 +184,7 @@ namespace ErgometerApplication
         private System.Windows.Forms.Button buttonLogOff;
         private System.Windows.Forms.Label labelUsername;
         private System.Windows.Forms.Label labelHallo;
-        public PanelClientData heartBeat, RPM, speed, distance, power, energy, seconds, actualpower, time;
+        public PanelClientData heartBeat, RPM, power, seconds, actualpower, time;
         public PanelClientSteps steps;
     }
 

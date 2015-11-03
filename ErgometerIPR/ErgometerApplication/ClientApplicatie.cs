@@ -45,10 +45,7 @@ namespace ErgometerApplication
 
                     heartBeat.updateValue(m.HeartBeat);
                     RPM.updateValue(m.RPM);
-                    speed.updateValue(m.Speed);
-                    distance.updateValue(m.Distance);
                     power.updateValue(m.Power);
-                    energy.updateValue(m.Energy);
                     actualpower.updateValue(m.ActualPower);
                     time.updateValue(m.Seconds);
 
@@ -74,19 +71,28 @@ namespace ErgometerApplication
                 }
                 if (password.Length > 0)
                 {
-                    string error = "";
-                    bool connect = MainClient.Connect(SerialPort.GetPortNames()[0], username, password, out error);
-
-                    if (connect)
+                    if (SerialPort.GetPortNames().Length > 0)
                     {
-                        panelGatherInfo.BringToFront();
-                        panelTopBar.Visible = true;
-                        this.labelUsername.Text = panelLogin.textBoxUsername.Text;
-                        
+                        string error = "";
+                        bool connect = MainClient.Connect(SerialPort.GetPortNames()[0], username, password, out error);
+
+                        if (connect)
+                        {
+                            panelGatherInfo.BringToFront();
+                            panelTopBar.Visible = true;
+                            this.labelUsername.Text = panelLogin.textBoxUsername.Text;
+
+                        }
+                        else
+                        {
+                            panelLogin.lblVerification.Text = error;
+                            panelLogin.lblVerification.ForeColor = Color.Red;
+                            panelLogin.lblVerification.Visible = true;
+                        }
                     }
                     else
                     {
-                        panelLogin.lblVerification.Text = error;
+                        panelLogin.lblVerification.Text = "De Ergometer is niet verbonden.";
                         panelLogin.lblVerification.ForeColor = Color.Red;
                         panelLogin.lblVerification.Visible = true;
                     }
