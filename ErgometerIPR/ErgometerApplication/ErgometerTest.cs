@@ -43,7 +43,7 @@ namespace ErgometerApplication
         {
             if(MainClient.Metingen.Count > 2 && MainClient.GetLastMeting().Power != MainClient.Metingen[MainClient.Metingen.Count - 2].Power)
             {
-                MainClient.ComPort.Write("PW" + MainClient.Metingen[MainClient.Metingen.Count - 2].Power);
+                MainClient.ComPort.Write("PW " + MainClient.Metingen[MainClient.Metingen.Count - 2].Power);
                 MainClient.ComPort.Read();
             }
 
