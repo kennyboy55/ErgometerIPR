@@ -35,7 +35,7 @@ namespace ErgometerApplication
             client.updateStepsText("U begint nu aan een warmup, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
 			workloads = new List<Workload>();
             MainClient.ComPort.Write("PW 25");
-
+            MainClient.ComPort.Read();
             MainClient.Client.heartBeat.max = (int)CalculateMaximumHeartRate();
         }
 
@@ -44,6 +44,7 @@ namespace ErgometerApplication
             if(MainClient.Metingen.Count > 2 && MainClient.GetLastMeting().Power != MainClient.Metingen[MainClient.Metingen.Count - 2].Power)
             {
                 MainClient.ComPort.Write("PW" + MainClient.Metingen[MainClient.Metingen.Count - 2].Power);
+                MainClient.ComPort.Read();
             }
 
             switch(currentstate)
@@ -85,7 +86,7 @@ namespace ErgometerApplication
                         int pw = GetWorkloadPower(GetCurrentWorkload());
                         workloads.Add(new Workload(MainClient.GetLastMeting().Power, workloadHearthbeat));
                         MainClient.ComPort.Write("PW " + pw);
-
+                        MainClient.ComPort.Read();
                         client.updateStepsText("U heeft de workload afgerond, u begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload. Uw nieuwe weerstand is " + pw + " Watt.");
                         MainClient.SwitchWorkloadAudio();
 
@@ -101,6 +102,7 @@ namespace ErgometerApplication
                             MainClient.SwitchTestModeAudio();
                             client.updateStepsText("Uw hartslag heeft het kritieke punt bereikt, we beginnen nu aan de cooldown.");
                             MainClient.ComPort.Write("PW 25");
+                            MainClient.ComPort.Read();
                         }
                     }
                     else if (MainClient.GetLastMeting().Seconds - workloadStarted > 160 && workloadHearthbeat == 0)
@@ -131,7 +133,8 @@ namespace ErgometerApplication
                     MainClient.Client.updateTimer.Stop();
                     MainClient.Client.beeptimer.Stop();
                     MainClient.ComPort.Write("RS");
-                    if(workloads.Count > 1)
+                    MainClient.ComPort.Read();
+                    if (workloads.Count > 1)
                     {
                         MainClient.Client.updateStepsText(String.Format("De test is afgelopen. Uw test resultaten zijn: \n VO2MAX: {0:0.00} MET: {1:0.00} Gemiddelde: {2:0.00} \n {3} ", CalculateVOMax(), CalculateMET(), CalculatePopulationAverage(), CalculateRating()));
                         MainClient.SendNetCommand(new ErgometerLibrary.NetCommand(CalculateVOMax(), CalculateMET(), CalculatePopulationAverage(), CalculateZScore(), CalculateRating(), MainClient.Session));
