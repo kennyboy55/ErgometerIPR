@@ -19,6 +19,9 @@ namespace ErgometerApplication
         private int workloadHearthbeat;
         private List<Workload> workloads;
 
+        private int deviation;
+        private bool failed;
+
         private ClientApplicatie client;
 
         public ErgometerTest(int weight, int length , int age, char gender, ClientApplicatie client)
@@ -30,6 +33,9 @@ namespace ErgometerApplication
             currentstate = state.WARMUP;
 
             MainClient.SwitchTestModeAudio();
+
+            deviation = 0;
+            failed = false;
 
             this.client = client;
             client.updateStepsText("U begint nu aan een warmup, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
@@ -47,14 +53,30 @@ namespace ErgometerApplication
                 MainClient.ComPort.Read();
             }
 
+            if (MainClient.GetLastMeting().RPM < 45 || MainClient.GetLastMeting().RPM > 55)
+                deviation++;
+            else
+                deviation = Math.Max(deviation-1, 0);
+
+            if(deviation >= 60 && !failed)
+            {
+                workloadStarted = MainClient.GetLastMeting().Seconds;
+                currentstate = state.COOLINGDOWN;
+                MainClient.SwitchTestModeAudio();
+                client.updateStepsText("U wijkt te vaak af van 50rpm, de test wordt gestopt. U begint nu aan de cooldown.");
+                failed = true;
+                MainClient.ComPort.Write("PW 25");
+                MainClient.ComPort.Read();
+            }
+
             switch(currentstate)
             {
                 case state.WARMUP:
                     if (MainClient.GetLastMeting().Seconds > 30)
                     {
-                        List<ErgometerLibrary.Meting> last10 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 10, 10);
-                        int max = FindMaxValue(last10, x => x.HeartBeat);
-                        int min = FindMinValue(last10, x => x.HeartBeat);
+                        List<ErgometerLibrary.Meting> last20 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 20, 20);
+                        int max = FindMaxValue(last20, x => x.HeartBeat);
+                        int min = FindMinValue(last20, x => x.HeartBeat);
                         if (max + min < 20)
                         {
                             client.updateStepsText("We detecteren geen hartslag. Controleer of de hartslagmeter is verbonden. De test gaat automatisch verder.");
@@ -107,8 +129,8 @@ namespace ErgometerApplication
                     }
                     else if (MainClient.GetLastMeting().Seconds - workloadStarted > 160 && workloadHearthbeat == 0)
                     {
-                        List<ErgometerLibrary.Meting> last80 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 300, 300);
-                        workloadHearthbeat = FindAverageValue(last80, x => x.HeartBeat);
+                        List<ErgometerLibrary.Meting> last200 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 200, 200);
+                        workloadHearthbeat = FindAverageValue(last200, x => x.HeartBeat);
                         Console.WriteLine("2:40 gefiets, gemiddelde harstslag berekenen:" + workloadHearthbeat);
                         client.updateStepsText("U bent nu met de " + NumToText(GetCurrentWorkload()) + " workload bezig. Uw gemiddelde hartslag is berekend als " + workloadHearthbeat + "bpm.");
                     }
@@ -134,7 +156,11 @@ namespace ErgometerApplication
                     MainClient.Client.beeptimer.Stop();
                     MainClient.ComPort.Write("RS");
                     MainClient.ComPort.Read();
-                    if (workloads.Count > 1)
+                    if(failed)
+                    {
+                        MainClient.Client.updateStepsText("De test is mislukt omdat u te vaak heeft afgeweken van 50rpm. Onze excuses voor het ongemak.");
+                    }
+                    else if (workloads.Count > 1)
                     {
                         MainClient.Client.updateStepsText(String.Format("De test is afgelopen. Uw test resultaten zijn: \n VO2MAX: {0:0.00} MET: {1:0.00} Gemiddelde: {2:0.00} \n {3} ", CalculateVOMax(), CalculateMET(), CalculatePopulationAverage(), CalculateRating()));
                         MainClient.SendNetCommand(new ErgometerLibrary.NetCommand(CalculateVOMax(), CalculateMET(), CalculatePopulationAverage(), CalculateZScore(), CalculateRating(), MainClient.Session));
