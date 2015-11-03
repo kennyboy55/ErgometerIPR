@@ -126,6 +126,8 @@ namespace ErgometerServer
                         FileHandler.WriteMetingen(session, metingen);
                         FileHandler.WriteChat(session, chat);
                         client.Close();
+                        server.SendToDoctor(new NetCommand(session, "De client heeft uitgelogd."));
+                        server.RemoveBacklogDisconnectedClient(session);
                         break;
                     case NetCommand.CommandType.ERROR:
                         Console.WriteLine("An error occured, assuming client disconnected");
