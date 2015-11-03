@@ -19,6 +19,8 @@ namespace ErgometerApplication
         private int workloadHearthbeat;
         private List<Workload> workloads;
 
+        private int currentPower;
+
         private int deviation;
         private bool failed;
 
@@ -42,15 +44,17 @@ namespace ErgometerApplication
 			workloads = new List<Workload>();
             MainClient.ComPort.Write("PW 25");
             MainClient.ComPort.Read();
+            currentPower = 25;
             MainClient.Client.heartBeat.max = (int)CalculateMaximumHeartRate();
         }
 
         public void timerTick()
         {
-            if(MainClient.Metingen.Count > 2 && MainClient.GetLastMeting().Power != MainClient.Metingen[MainClient.Metingen.Count - 2].Power)
+            if (MainClient.GetLastMeting().Seconds > 5 && currentPower != MainClient.GetLastMeting().Power)
             {
-                MainClient.ComPort.Write("PW " + MainClient.Metingen[MainClient.Metingen.Count - 2].Power);
+                MainClient.ComPort.Write("PW " + currentPower);
                 MainClient.ComPort.Read();
+                MainClient.QuickBeepAudio();
             }
 
             if (MainClient.GetLastMeting().RPM < 45 || MainClient.GetLastMeting().RPM > 55)
@@ -67,6 +71,7 @@ namespace ErgometerApplication
                 failed = true;
                 MainClient.ComPort.Write("PW 25");
                 MainClient.ComPort.Read();
+                currentPower = 25;
             }
 
             switch(currentstate)
@@ -105,11 +110,11 @@ namespace ErgometerApplication
                 case state.WORKLOAD:
                     if (MainClient.GetLastMeting().Seconds - workloadStarted > 180)
                     {
-                        int pw = GetWorkloadPower(GetCurrentWorkload());
+                        currentPower = GetWorkloadPower(GetCurrentWorkload());
                         workloads.Add(new Workload(MainClient.GetLastMeting().Power, workloadHearthbeat));
-                        MainClient.ComPort.Write("PW " + pw);
+                        MainClient.ComPort.Write("PW " + currentPower);
                         MainClient.ComPort.Read();
-                        client.updateStepsText("U heeft de workload afgerond, u begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload. Uw nieuwe weerstand is " + pw + " Watt.");
+                        client.updateStepsText("U heeft de workload afgerond, u begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload. Uw nieuwe weerstand is " + currentPower + " Watt.");
                         MainClient.SwitchWorkloadAudio();
 
                         workloadStarted = MainClient.GetLastMeting().Seconds;
@@ -125,12 +130,13 @@ namespace ErgometerApplication
                             client.updateStepsText("Uw hartslag heeft het kritieke punt bereikt, we beginnen nu aan de cooldown.");
                             MainClient.ComPort.Write("PW 25");
                             MainClient.ComPort.Read();
+                            currentPower = 25;
                         }
                     }
                     else if (MainClient.GetLastMeting().Seconds - workloadStarted > 160 && workloadHearthbeat == 0)
                     {
-                        List<ErgometerLibrary.Meting> last200 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 200, 200);
-                        workloadHearthbeat = FindAverageValue(last200, x => x.HeartBeat);
+                        List<ErgometerLibrary.Meting> last150 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 150, 150);
+                        workloadHearthbeat = FindAverageValue(last150, x => x.HeartBeat);
                         Console.WriteLine("2:40 gefiets, gemiddelde harstslag berekenen:" + workloadHearthbeat);
                         client.updateStepsText("U bent nu met de " + NumToText(GetCurrentWorkload()) + " workload bezig. Uw gemiddelde hartslag is berekend als " + workloadHearthbeat + "bpm.");
                     }
@@ -156,6 +162,7 @@ namespace ErgometerApplication
                     MainClient.Client.beeptimer.Stop();
                     MainClient.ComPort.Write("RS");
                     MainClient.ComPort.Read();
+                    currentPower = 0;
                     if(failed)
                     {
                         MainClient.Client.updateStepsText("De test is mislukt omdat u te vaak heeft afgeweken van 50rpm. Onze excuses voor het ongemak.");
