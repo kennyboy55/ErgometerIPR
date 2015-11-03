@@ -49,7 +49,7 @@ namespace ErgometerApplication
 
         public static void RPMBeatAudio()
         {
-            Console.Beep(1000, 5);
+            Console.Beep(1000, 50);
         }
 
         public static void SwitchWorkloadAudio()
