@@ -52,6 +52,11 @@ namespace ErgometerApplication
             Console.Beep(1000, 50);
         }
 
+        public static void QuickBeepAudio()
+        {
+            Console.Beep(1200, 150);
+        }
+
         public static void SwitchWorkloadAudio()
         {
             Console.Beep(1000, 200);

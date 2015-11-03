@@ -14,10 +14,14 @@ namespace ErgometerDoctorApplication
     public partial class MainWindow : Form
     {
         private int request;
+        public bool updateSession;
 
         public MainWindow()
         {
             InitializeComponent();
+            MainClient.Init(this);
+
+            updateSession = false;
             conPanelLogin.BringToFront();
             request = 2;
             updateTimer.Start();
@@ -130,6 +134,12 @@ namespace ErgometerDoctorApplication
 
         private void updateTimer_tick(object sender, EventArgs e)
         {
+            if (updateSession)
+            {
+                BtnActiveSessions_Click(this, new EventArgs());
+                updateSession = false;
+            }
+
             if (request == 0)
                 MainClient.SendNetCommand(new NetCommand(NetCommand.RequestType.USERS, MainClient.Session));
             else if (request == 1)

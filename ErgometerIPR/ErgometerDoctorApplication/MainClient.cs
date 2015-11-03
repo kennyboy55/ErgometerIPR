@@ -26,6 +26,8 @@ namespace ErgometerDoctorApplication
 
         public static List<NetCommand> backlog;
 
+        public static MainWindow Window;
+
 
         //Server information
         public static List<ClientThread> clients;
@@ -50,6 +52,11 @@ namespace ErgometerDoctorApplication
             activesessions = new Dictionary<int, string>();
             oldSessionsData = new List<Tuple<string, double, int>>();
             backlog = new List<NetCommand>();
+        }
+
+        public static void Init(MainWindow client)
+        {
+            Window = client;
         }
 
         public static bool Connect(string password, out string error)
@@ -195,10 +202,17 @@ namespace ErgometerDoctorApplication
                     if (ActiveSessionsBeingSent)
                     {
                         activesessions.Add(command.Session, command.DisplayName);
+                        Console.WriteLine(command.Session + " | " + command.DisplayName);
                         ActiveSessionsSent++;
                         if (ActiveSessionsSent >= ActiveSessionsLength)
+                        {
                             ActiveSessionsBeingSent = false;
+                            if (Window.HeaderLabel.Text == "Actieve Sessies")
+                                Window.updateSession = true;
+                        }
                     }
+                    break;
+                case NetCommand.CommandType.OLDSESSIONDATA:
                     if (SessionsBeingSent)
                     {
                         oldSessionsData.Add(new Tuple<string, double, int>(command.DisplayName, command.Timestamp, command.Session));

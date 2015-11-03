@@ -9,7 +9,7 @@ namespace ErgometerLibrary
 {
     public class NetCommand
     {
-        public enum CommandType { LOGIN, DATA, CHAT, LOGOUT, SESSION, VALUESET, USER, RESPONSE, REQUEST, LENGTH, SESSIONDATA, ERROR, BROADCAST, UITLEG, PERSONDATA, TESTRESULT}
+        public enum CommandType { LOGIN, DATA, CHAT, LOGOUT, SESSION, VALUESET, USER, RESPONSE, REQUEST, LENGTH, SESSIONDATA, OLDSESSIONDATA, ERROR, BROADCAST, UITLEG, PERSONDATA, TESTRESULT}
         public enum RequestType { USERS, ALLSESSIONS, OLDDATA, SESSIONDATA, CHAT, PERSONALDATA, TESTRESULT }
         public enum ResponseType { LOGINOK, LOGINWRONG, ERROR, NOTLOGGEDIN }
         public enum ValueType { TIME, POWER, ENERGY, DISTANCE }
@@ -94,6 +94,25 @@ namespace ErgometerLibrary
             Session = session;
             Timestamp = timestamp;
             DisplayName = name;
+        }
+
+        //SESSIONDATA
+        public NetCommand(string name, double timestamp, int session, bool old)
+        {
+            if (old)
+            {
+                Type = CommandType.OLDSESSIONDATA;
+                Session = session;
+                Timestamp = timestamp;
+                DisplayName = name;
+            }
+            else
+            {
+                Type = CommandType.SESSIONDATA;
+                Session = session;
+                Timestamp = timestamp;
+                DisplayName = name;
+            }
         }
 
         //RESPONSE
@@ -251,9 +270,21 @@ namespace ErgometerLibrary
                     return ParsePersonData(session, args);
                 case 15:
                     return ParseTestResult(session, args);
+                case 16:
+                    return ParseOldSessionData(session, args);
                 default:
                     throw new FormatException("Error in NetCommand: " + comType + " is not a valid command type.");
             }
+        }
+
+        private static NetCommand ParseOldSessionData(int session, string[] args)
+        {
+            if (args.Length != 2)
+                throw new MissingFieldException("Error in NetCommand: OLD Session Data is missing arguments");
+
+            NetCommand temp = new NetCommand(args[0], double.Parse(args[1]), session, true);
+
+            return temp;
         }
 
         private static NetCommand ParseTestResult(int session, string[] args)
@@ -508,6 +539,9 @@ namespace ErgometerLibrary
                     break;
                 case CommandType.TESTRESULT:
                     command += "15»ses" + Session + "»" + VO2Max + "»" + MET + "»" + PopulationAvg + "»" + ZScore + "»" + Rating;
+                    break;
+                case CommandType.OLDSESSIONDATA:
+                    command += "16»ses" + Session + "»" + DisplayName + "»" + Timestamp;
                     break;
                 case CommandType.ERROR:
                     command += "ERROR IN NETCOMMAND";

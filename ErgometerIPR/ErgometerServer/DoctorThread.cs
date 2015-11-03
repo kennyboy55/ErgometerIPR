@@ -83,7 +83,7 @@ namespace ErgometerServer
                                 sendToDoctor(new NetCommand(NetCommand.LengthType.SESSIONS, sessions.Count, input.Session));
                                 foreach(Tuple<int,string,double> session in sessions)
                                 {
-                                    sendToDoctor(new NetCommand(session.Item2, session.Item3, session.Item1));
+                                    sendToDoctor(new NetCommand(session.Item2, session.Item3, session.Item1, true));
                                     Thread.Sleep(10);
                                 }
                                 break;
