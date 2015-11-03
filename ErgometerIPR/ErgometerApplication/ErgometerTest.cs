@@ -75,16 +75,6 @@ namespace ErgometerApplication
                 case state.WORKLOAD:
                     if (MainClient.GetLastMeting().Seconds - workloadStarted > 180)
                     {
-                        //Checken of de heartrate niet groter is dan 75%, anders stoppen
-                        if (workloadHearthbeat > (CalculateMaximumHeartRate() * 0.80))
-                        {
-                            workloadStarted = MainClient.GetLastMeting().Seconds;
-                            currentstate = state.COOLINGDOWN;
-                            MainClient.SwitchTestModeAudio();
-                            client.updateStepsText("Uw hartslag heeft het kritieke punt bereikt, we beginnen nu aan de cooldown.");
-                            MainClient.ComPort.Write("PW 25");
-                        }
-
                         int pw = GetWorkloadPower(GetCurrentWorkload());
                         workloads.Add(new Workload(MainClient.GetLastMeting().Power, workloadHearthbeat));
                         MainClient.ComPort.Write("PW " + pw);
@@ -95,6 +85,16 @@ namespace ErgometerApplication
                         workloadStarted = MainClient.GetLastMeting().Seconds;
                         workloadHearthbeat = 0;
                         Console.WriteLine("3:00 gefietst, workload" + (GetCurrentWorkload()) + " af, nieuwe waardes maken");
+
+                        //Checken of de heartrate niet groter is dan 75%, anders stoppen
+                        if (workloadHearthbeat > (CalculateMaximumHeartRate() * 0.80))
+                        {
+                            workloadStarted = MainClient.GetLastMeting().Seconds;
+                            currentstate = state.COOLINGDOWN;
+                            MainClient.SwitchTestModeAudio();
+                            client.updateStepsText("Uw hartslag heeft het kritieke punt bereikt, we beginnen nu aan de cooldown.");
+                            MainClient.ComPort.Write("PW 25");
+                        }
                     }
                     else if (MainClient.GetLastMeting().Seconds - workloadStarted > 160 && workloadHearthbeat == 0)
                     {
@@ -130,7 +130,7 @@ namespace ErgometerApplication
                     }
                     else
                     {
-                        MainClient.Client.updateStepsText("Er zijn teweinig workload tests afgenomen om een resultaat te maken. Onze excuses voor het ongemak.");
+                        MainClient.Client.updateStepsText("Er zijn te weinig workload tests afgenomen om een resultaat te maken. Onze excuses voor het ongemak.");
                     }
                     break;
             }

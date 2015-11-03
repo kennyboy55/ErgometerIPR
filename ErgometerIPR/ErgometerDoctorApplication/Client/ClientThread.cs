@@ -43,11 +43,14 @@ namespace ErgometerDoctorApplication
             switch (command.Type)
             {
                 case NetCommand.CommandType.DATA:
-                    lock (Metingen)
+                    if (command != null && command.Meting != null)
                     {
-                        Metingen.Add(command.Meting);
+                        lock (Metingen)
+                        {
+                            Metingen.Add(command.Meting);
+                        }
+                        window.Invoke(window.updateMetingen, new Object[] { command.Meting });
                     }
-                    window.Invoke(window.updateMetingen, new Object[] { command.Meting });
                     break;
                 case NetCommand.CommandType.CHAT:
                     ChatMessage chat = new ChatMessage(command.DisplayName, command.ChatMessage, command.IsDoctor);

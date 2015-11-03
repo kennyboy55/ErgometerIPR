@@ -120,6 +120,7 @@ namespace ErgometerApplication
             MainClient.ComPort.Read();
             ergotest = new ErgometerTest(gewicht, lengte, leeftijd, geslacht, this);
             updateTimer.Start();
+            beeptimer.Start();
             
         }
 
