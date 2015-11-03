@@ -63,7 +63,7 @@ namespace ErgometerApplication
             //
             // beeptimer
             //
-            this.beeptimer.Interval = 833;
+            this.beeptimer.Interval = 1200;
             this.beeptimer.Tick += new System.EventHandler(this.updateBeep);
             // 
             // panelClientContainer
