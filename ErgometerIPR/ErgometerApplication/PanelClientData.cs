@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ErgometerLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,8 @@ namespace ErgometerApplication
         public ProgressBar progressBarMeting;
         public Label metingName;
 
-        private int min;
-        private int max;
+        private int min { get; set; }
+        public int max { get; set; }
         private string name;
 
         public PanelClientData(string name, int min, int max) : base()
@@ -63,7 +64,7 @@ namespace ErgometerApplication
             this.labelMetingCurrentValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelMetingCurrentValue.AutoSize = true;
             this.labelMetingCurrentValue.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelMetingCurrentValue.Location = new System.Drawing.Point(215, 32);
+            this.labelMetingCurrentValue.Location = new System.Drawing.Point(210, 32);
             this.labelMetingCurrentValue.Name = "labelMetingCurrentValue";
             this.labelMetingCurrentValue.Size = new System.Drawing.Size(57, 32);
             this.labelMetingCurrentValue.TabIndex = 2;
@@ -79,7 +80,7 @@ namespace ErgometerApplication
         {
             if (name == "Tijd")
             {
-                this.labelMetingCurrentValue.Text = (value / 60) + ":" + (value % 60);
+                this.labelMetingCurrentValue.Text = Helper.SecondsToTime(value);
             }
             else
             {

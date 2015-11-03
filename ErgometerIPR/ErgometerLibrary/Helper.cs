@@ -28,5 +28,28 @@ namespace ErgometerLibrary
             var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
+
+        public static string SecondsToTime(int input)
+        {
+            int hours = input / 3600;
+            input %= 3600;
+
+            int minutes = input / 60;
+            input %= 60;
+
+            int seconds = input;
+
+            string rtnstr = "";
+
+            if (hours != 0)
+            {
+                rtnstr += hours.ToString("D2") + ":";
+            }
+
+            rtnstr += minutes.ToString("D2") + ":";
+            rtnstr += seconds.ToString("D2");
+
+            return rtnstr;
+        }
     }
 }
