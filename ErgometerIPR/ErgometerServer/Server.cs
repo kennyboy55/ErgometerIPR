@@ -20,6 +20,7 @@ namespace ErgometerServer
         public static List<ClientThread> clients = new List<ClientThread>();
         private DoctorThread doctor;
         public Dictionary<string, string> users;
+        public List<NetCommand> backlog = new List<NetCommand>();
 
         public Server()
         {
@@ -62,13 +63,30 @@ namespace ErgometerServer
             Thread thread = new Thread(new ThreadStart(doctor.run));
             thread.IsBackground = true;
             thread.Start();
+
+            foreach(NetCommand command in backlog)
+            {
+                SendToDoctor(command);
+                Thread.Sleep(5);
+            }
+        }
+
+        public void RemoveBacklogDisconnectedClient(int session)
+        {
+            for(int i=backlog.Count - 1; i>= 0; i--)
+            {
+                if (backlog[i].Session == session)
+                    backlog.RemoveAt(i);
+            }
         }
 
         public void SendToDoctor(NetCommand command)
         {
             if (doctor != null)
-            {
                 doctor.sendToDoctor(command);
+            else
+            {
+                backlog.Add(command);
             }
         }
 

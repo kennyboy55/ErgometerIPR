@@ -35,6 +35,7 @@ namespace ErgometerServer
                     case NetCommand.CommandType.LOGOUT:
                         running = false;
                         client.Close();
+                        server.backlog.Clear();
                         Console.WriteLine("Doctor logged out");
                         break;
                     case NetCommand.CommandType.CHAT:

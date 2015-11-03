@@ -24,6 +24,8 @@ namespace ErgometerDoctorApplication
         public static string HOST = "127.0.0.1";
         public static int PORT = 8888;
 
+        public static List<NetCommand> backlog;
+
 
         //Server information
         public static List<ClientThread> clients;
@@ -47,6 +49,7 @@ namespace ErgometerDoctorApplication
             users = new Dictionary<string, string>();
             activesessions = new Dictionary<int, string>();
             oldSessionsData = new List<Tuple<string, double, int>>();
+            backlog = new List<NetCommand>();
         }
 
         public static bool Connect(string password, out string error)
@@ -212,12 +215,19 @@ namespace ErgometerDoctorApplication
 
         private static void HandToClient(NetCommand command)
         {
+            bool handled = false;
             foreach (ClientThread cl in clients)
             {
                 if (cl.Session == command.Session)
                 {
                     cl.HandleCommand(command);
+                    handled = true;
                 }
+            }
+
+            if(!handled)
+            {
+                backlog.Add(command);
             }
         }
 
@@ -240,6 +250,22 @@ namespace ErgometerDoctorApplication
             return false;
         }
 
+        private static List<NetCommand> GetBacklogForSession(int session)
+        {
+            List<NetCommand> temp = new List<NetCommand>();
+
+            for(int i=backlog.Count-1; i>= 0; i--)
+            {
+                if (backlog[i].Session == session)
+                {
+                    temp.Add(backlog[i]);
+                    backlog.RemoveAt(i);
+                }
+            }
+
+            return temp;
+        }
+
         public static void StartNewClient(string name, int session)
         {
             if (IsSessionRunning(session))
@@ -253,6 +279,14 @@ namespace ErgometerDoctorApplication
             Thread thread = new Thread(new ThreadStart(cl.run));
             thread.IsBackground = true;
             thread.Start();
+
+            Thread.Sleep(5);
+
+            List<NetCommand> sessionbacklog = GetBacklogForSession(session);
+            for (int i = sessionbacklog.Count - 1; i >= 0; i--)
+            {
+                cl.HandleCommand(sessionbacklog[i]);
+            }
 
             Thread.Sleep(5);
             SendNetCommand(new NetCommand(NetCommand.RequestType.PERSONALDATA, session));
