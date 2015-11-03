@@ -15,6 +15,7 @@ namespace ErgometerApplication
 
         private enum state {WARMUP, WORKLOAD, COOLINGDOWN, STOP};
         private state currentstate;
+        private int currentPower;
         private int workloadStarted;
         private int workloadHearthbeat;
         private List<Workload> workloads;
@@ -35,12 +36,21 @@ namespace ErgometerApplication
             client.updateStepsText("U begint nu aan een warmup, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
 			workloads = new List<Workload>();
             MainClient.ComPort.Write("PW 25");
-
+            MainClient.ComPort.Read();
+            currentPower = 25;
             MainClient.Client.heartBeat.max = (int)CalculateMaximumHeartRate();
         }
 
         public void timerTick()
         {
+            if (MainClient.GetLastMeting().Seconds > 5 && currentPower != MainClient.GetLastMeting().Power)
+            {
+                MainClient.ComPort.Write("PW " + currentPower);
+                MainClient.ComPort.Read();
+                MainClient.QuickBeepAudio();
+            }
+
+
             switch(currentstate)
             {
                 case state.WARMUP:
@@ -77,11 +87,12 @@ namespace ErgometerApplication
                 case state.WORKLOAD:
                     if (MainClient.GetLastMeting().Seconds - workloadStarted > 180)
                     {
-                        int pw = GetWorkloadPower(GetCurrentWorkload());
+                        currentPower = GetWorkloadPower(GetCurrentWorkload());
                         workloads.Add(new Workload(MainClient.GetLastMeting().Power, workloadHearthbeat));
-                        MainClient.ComPort.Write("PW " + pw);
+                        MainClient.ComPort.Write("PW " + currentPower);
+                        MainClient.ComPort.Read();
 
-                        client.updateStepsText("U heeft de workload afgerond, u begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload. Uw nieuwe weerstand is " + pw + " Watt.");
+                        client.updateStepsText("U heeft de workload afgerond, u begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload. Uw nieuwe weerstand is " + currentPower + " Watt.");
                         MainClient.SwitchWorkloadAudio();
 
                         workloadStarted = MainClient.GetLastMeting().Seconds;
@@ -95,7 +106,10 @@ namespace ErgometerApplication
                             currentstate = state.COOLINGDOWN;
                             MainClient.SwitchTestModeAudio();
                             client.updateStepsText("Uw hartslag heeft het kritieke punt bereikt, we beginnen nu aan de cooldown.");
+                            
                             MainClient.ComPort.Write("PW 25");
+                            MainClient.ComPort.Read();
+                            currentPower = 25;
                         }
                     }
                     else if (MainClient.GetLastMeting().Seconds - workloadStarted > 160 && workloadHearthbeat == 0)
