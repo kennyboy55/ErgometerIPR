@@ -36,6 +36,11 @@ namespace ErgometerApplication
             this.Controls.Add(this.labelMetingCurrentValue);
             if(name != "Tijd")
                 this.Controls.Add(this.progressBarMeting);
+            if (name == "RPM")
+            {
+                this.rpmpicturebox = new PictureBox();
+                this.Controls.Add(this.rpmpicturebox);
+            }
             this.Controls.Add(this.metingName);
             this.Dock = System.Windows.Forms.DockStyle.Top;
             this.Location = new System.Drawing.Point(0, 0);
@@ -75,8 +80,7 @@ namespace ErgometerApplication
             //rpm check
             if (name == "RPM")
             {
-                this.rpmpicturebox = new PictureBox();
-                this.rpmpicturebox.Location = new System.Drawing.Point(210, 32);
+                this.rpmpicturebox.Location = new System.Drawing.Point(210, 0);
                 this.rpmpicturebox.Size = new System.Drawing.Size(57, 32);
                 this.rpmpicturebox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
                 this.rpmpicturebox.AutoSize = true;
