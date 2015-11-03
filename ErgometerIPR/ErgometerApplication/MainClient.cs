@@ -81,7 +81,7 @@ namespace ErgometerApplication
                 {
                     ComPort.Write("RS");
                     string temp = ComPort.Read();
-                    if (temp == "err")
+                    if (temp.ToLower() != "ack")
                     {
                         ComPort.Disconnect();
                         error = "De Ergometer is niet verbonden";
