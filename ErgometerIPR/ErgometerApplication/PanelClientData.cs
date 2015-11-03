@@ -12,6 +12,7 @@ namespace ErgometerApplication
     {
         public Label labelMetingCurrentValue;
         public ProgressBar progressBarMeting;
+        public PictureBox rpmpicturebox;
         public Label metingName;
 
         private int min { get; set; }
@@ -58,6 +59,7 @@ namespace ErgometerApplication
             this.progressBarMeting.Size = new System.Drawing.Size(183, 23);
             this.progressBarMeting.TabIndex = 1;
             this.progressBarMeting.Value = 0;
+
             // 
             // labelMetingCurrentValue
             // 
@@ -69,6 +71,17 @@ namespace ErgometerApplication
             this.labelMetingCurrentValue.Size = new System.Drawing.Size(57, 32);
             this.labelMetingCurrentValue.TabIndex = 2;
             this.labelMetingCurrentValue.Text = "0";
+
+            //rpm check
+            if (name == "RPM")
+            {
+                this.rpmpicturebox = new PictureBox();
+                this.rpmpicturebox.Location = new System.Drawing.Point(210, 32);
+                this.rpmpicturebox.Size = new System.Drawing.Size(57, 32);
+                this.rpmpicturebox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                this.rpmpicturebox.AutoSize = true;
+                this.rpmpicturebox.Name = "rpmbox";
+            }
         }
 
         public void setText(string text)
@@ -78,6 +91,24 @@ namespace ErgometerApplication
 
         public void updateValue(int value)
         {
+            if(name == "RPM")
+            {
+                if(value < 45)
+                {
+                    this.rpmpicturebox.Image = Properties.Resources.up;
+                    this.labelMetingCurrentValue.ForeColor = System.Drawing.Color.Red;
+                }
+                else if( value > 55)
+                {
+                    this.labelMetingCurrentValue.ForeColor = System.Drawing.Color.Red;
+                    this.rpmpicturebox.Image = Properties.Resources.down;
+                }
+                else
+                {
+                    this.labelMetingCurrentValue.ForeColor = System.Drawing.Color.Green;
+                    this.rpmpicturebox.Image = Properties.Resources.stay;
+                }
+            }
             if (name == "Tijd")
             {
                 this.labelMetingCurrentValue.Text = Helper.SecondsToTime(value);
