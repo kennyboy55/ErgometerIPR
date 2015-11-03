@@ -33,6 +33,7 @@ namespace ErgometerApplication
             // 
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Controls.Add(this.metingName);
             this.Controls.Add(this.labelMetingCurrentValue);
             if(name != "Tijd")
                 this.Controls.Add(this.progressBarMeting);
@@ -40,8 +41,7 @@ namespace ErgometerApplication
             {
                 this.rpmpicturebox = new PictureBox();
                 this.Controls.Add(this.rpmpicturebox);
-            }
-            this.Controls.Add(this.metingName);
+            }  
             this.Dock = System.Windows.Forms.DockStyle.Top;
             this.Location = new System.Drawing.Point(0, 0);
             this.Name = "panel1";
@@ -56,6 +56,7 @@ namespace ErgometerApplication
             this.metingName.Size = new System.Drawing.Size(105, 21);
             this.metingName.TabIndex = 0;
             this.metingName.Text = name;
+            this.metingName.BackColor = System.Drawing.Color.Transparent;
             // 
             // progressBarMeting
             // 
@@ -76,14 +77,16 @@ namespace ErgometerApplication
             this.labelMetingCurrentValue.Size = new System.Drawing.Size(57, 32);
             this.labelMetingCurrentValue.TabIndex = 2;
             this.labelMetingCurrentValue.Text = "0";
+            this.labelMetingCurrentValue.BackColor = System.Drawing.Color.Transparent;
 
             //rpm check
             if (name == "RPM")
             {
-                this.rpmpicturebox.Location = new System.Drawing.Point(210, 0);
+                this.rpmpicturebox.Location = new System.Drawing.Point(153, 32);
                 this.rpmpicturebox.Size = new System.Drawing.Size(57, 32);
                 this.rpmpicturebox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
                 this.rpmpicturebox.AutoSize = true;
+                this.rpmpicturebox.SizeMode = PictureBoxSizeMode.StretchImage;
                 this.rpmpicturebox.Name = "rpmbox";
             }
         }
