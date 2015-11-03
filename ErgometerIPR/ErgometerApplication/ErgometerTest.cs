@@ -35,6 +35,8 @@ namespace ErgometerApplication
             client.updateStepsText("U begint nu aan een warmup, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
 			workloads = new List<Workload>();
             MainClient.ComPort.Write("PW 25");
+
+            MainClient.Client.heartBeat.max = (int)CalculateMaximumHeartRate();
         }
 
         public void timerTick()
@@ -49,7 +51,7 @@ namespace ErgometerApplication
                         int min = FindMinValue(last10, x => x.HeartBeat);
                         if (max + min < 20)
                         {
-                            client.updateStepsText("We detecteren geen hartslag. Controleer of de hartslagmeter is verbonden.");
+                            client.updateStepsText("We detecteren geen hartslag. Controleer of de hartslagmeter is verbonden. De test gaat automatisch verder.");
                         }
                         else if (max - min > 10) //Hartslag niet stabiel
                         {
@@ -61,7 +63,7 @@ namespace ErgometerApplication
                             currentstate = state.WORKLOAD;
                             MainClient.SwitchTestModeAudio();
                             workloadStarted = MainClient.GetLastMeting().Seconds;
-                            client.updateStepsText("De warmup is voltooid. U begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload.");
+                            client.updateStepsText("De warmup is voltooid. De test gaat nu beginnen. U begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload.");
                         }
                     }
                     if (MainClient.GetLastMeting().Seconds > 9 && MainClient.GetLastMeting().Seconds < 11)
@@ -98,8 +100,8 @@ namespace ErgometerApplication
                     }
                     else if (MainClient.GetLastMeting().Seconds - workloadStarted > 160 && workloadHearthbeat == 0)
                     {
-                        List<ErgometerLibrary.Meting> last80 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 80, 80);
-                        workloadHearthbeat = FindAvergeValue(MainClient.Metingen, x => x.HeartBeat);
+                        List<ErgometerLibrary.Meting> last80 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 300, 300);
+                        workloadHearthbeat = FindAverageValue(MainClient.Metingen, x => x.HeartBeat);
                         Console.WriteLine("2:40 gefiets, gemiddelde harstslag berekenen:" + workloadHearthbeat);
                         client.updateStepsText("U bent nu met de " + NumToText(GetCurrentWorkload()) + " workload bezig. Uw gemiddelde hartslag is berekend als " + workloadHearthbeat + "bpm.");
                     }
@@ -122,6 +124,7 @@ namespace ErgometerApplication
                     break;
                 case state.STOP:
                     MainClient.Client.updateTimer.Stop();
+                    MainClient.Client.beeptimer.Stop();
                     MainClient.ComPort.Write("RS");
                     if(workloads.Count > 1)
                     {
@@ -313,7 +316,7 @@ namespace ErgometerApplication
             return minValue;
         }
 
-        public int FindAvergeValue<T>(List<T> list, Converter<T, int> projection)
+        public int FindAverageValue<T>(List<T> list, Converter<T, int> projection)
         {
             if (list.Count == 0)
             {
