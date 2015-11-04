@@ -62,7 +62,7 @@ namespace ErgometerApplication
             else
                 deviation = Math.Max(deviation-1, 0);
 
-            if(deviation >= 60 && !failed)
+            if(deviation >= 80 && !failed)
             {
                 workloadStarted = MainClient.GetLastMeting().Seconds;
                 currentstate = state.COOLINGDOWN;
@@ -127,6 +127,7 @@ namespace ErgometerApplication
                             workloadStarted = MainClient.GetLastMeting().Seconds;
                             currentstate = state.COOLINGDOWN;
                             MainClient.SwitchTestModeAudio();
+                            MainClient.SendNetCommand(new ErgometerLibrary.NetCommand(CalculateVOMax(), CalculateMET(), CalculatePopulationAverage(), CalculateZScore(), CalculateRating(), MainClient.Session));
                             client.updateStepsText("Uw hartslag heeft het kritieke punt bereikt, we beginnen nu aan de cooldown.");
                             MainClient.ComPort.Write("PW 25");
                             MainClient.ComPort.Read();
@@ -170,7 +171,6 @@ namespace ErgometerApplication
                     else if (workloads.Count > 1)
                     {
                         MainClient.Client.updateStepsText(String.Format("De test is afgelopen. Uw test resultaten zijn: \n VO2MAX: {0:0.00} MET: {1:0.00} Gemiddelde: {2:0.00} \n {3} ", CalculateVOMax(), CalculateMET(), CalculatePopulationAverage(), CalculateRating()));
-                        MainClient.SendNetCommand(new ErgometerLibrary.NetCommand(CalculateVOMax(), CalculateMET(), CalculatePopulationAverage(), CalculateZScore(), CalculateRating(), MainClient.Session));
                     }
                     else
                     {

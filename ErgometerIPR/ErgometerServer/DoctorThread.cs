@@ -77,6 +77,8 @@ namespace ErgometerServer
                                     Thread.Sleep(10);
                                     sendToDoctor(new NetCommand(meting, input.Session));      
                                 }
+
+
                                 break;
                             case NetCommand.RequestType.ALLSESSIONS:
                                 List<Tuple<int, string, double>> sessions = FileHandler.GetAllSessions();

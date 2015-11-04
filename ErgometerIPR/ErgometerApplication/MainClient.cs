@@ -80,7 +80,8 @@ namespace ErgometerApplication
                 if (ComPort.Connect(comport))
                 {
                     ComPort.Write("RS");
-                    string temp = ComPort.Read();
+                    string temp = ComPort.Read().Replace("\r", "").Replace("\n", "");
+                    Console.WriteLine(temp);
                     if (temp.ToLower() != "ack")
                     {
                         ComPort.Disconnect();

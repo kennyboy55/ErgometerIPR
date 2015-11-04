@@ -75,7 +75,7 @@ namespace ErgometerApplication
                     {
                         string error = "";
                         bool connect = false;
-                        foreach(string comport in SerialPort.GetPortNames())
+                        foreach(string comport in SerialPort.GetPortNames().Reverse())
                         {
                             connect = MainClient.Connect(comport, username, password, out error);
                             if (connect)
