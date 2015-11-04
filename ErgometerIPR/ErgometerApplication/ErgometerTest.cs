@@ -56,7 +56,7 @@ namespace ErgometerApplication
                 currentPower = 25;
             }
             
-            MainClient.Client.heartBeat.max = (int)CalculateMaximumHeartRate();
+            MainClient.Client.heartBeat.max = (int)(CalculateMaximumHeartRate()*0.70);
         }
 
         public void timerTick()
@@ -68,7 +68,7 @@ namespace ErgometerApplication
                 MainClient.QuickBeepAudio();
             }
 
-            if (MainClient.GetLastMeting().RPM < 45 || MainClient.GetLastMeting().RPM > 55)
+            if (MainClient.GetLastMeting().RPM < 42 || MainClient.GetLastMeting().RPM > 58)
                 deviation++;
             else
                 deviation = Math.Max(deviation-1, 0);
@@ -88,11 +88,11 @@ namespace ErgometerApplication
             switch(currentstate)
             {
                 case state.WARMUP:
-                    if (MainClient.GetLastMeting().Seconds > 30)
+                    if (MainClient.GetLastMeting().Seconds > 20)
                     {
-                        List<ErgometerLibrary.Meting> last20 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 20, 20);
-                        int max = FindMaxValue(last20, x => x.HeartBeat);
-                        int min = FindMinValue(last20, x => x.HeartBeat);
+                        List<ErgometerLibrary.Meting> last10 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 10, 10);
+                        int max = FindMaxValue(last10, x => x.HeartBeat);
+                        int min = FindMinValue(last10, x => x.HeartBeat);
                         if (max + min < 20)
                         {
                             client.updateStepsText("We detecteren geen hartslag. Controleer of de hartslagmeter is verbonden. De test gaat automatisch verder.");
@@ -110,7 +110,7 @@ namespace ErgometerApplication
                             client.updateStepsText("De warmup is voltooid. De test gaat nu beginnen. U begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload.");
                         }
                     }
-                    if (MainClient.GetLastMeting().Seconds > 9 && MainClient.GetLastMeting().Seconds < 11)
+                    if (MainClient.GetLastMeting().Seconds > 4 && MainClient.GetLastMeting().Seconds < 6)
                     {
                         if (MainClient.GetLastMeting().HeartBeat < 20)
                         {
@@ -119,21 +119,21 @@ namespace ErgometerApplication
                     }
                     break;
                 case state.WORKLOAD:
-                    if (MainClient.GetLastMeting().Seconds - workloadStarted > 180)
+                    if (MainClient.GetLastMeting().Seconds - workloadStarted > 30)
                     {
                         currentPower = GetWorkloadPower(GetCurrentWorkload());
                         workloads.Add(new Workload(MainClient.GetLastMeting().Power, workloadHearthbeat));
                         MainClient.ComPort.Write("PW " + currentPower);
                         MainClient.ComPort.Read();
                         client.updateStepsText("U heeft de workload afgerond, u begint nu aan de " + NumToText(GetCurrentWorkload()) + " workload. Uw nieuwe weerstand is " + currentPower + " Watt.");
-                        MainClient.SwitchWorkloadAudio();
+                        
 
                         workloadStarted = MainClient.GetLastMeting().Seconds;
                         workloadHearthbeat = 0;
                         Console.WriteLine("3:00 gefietst, workload" + (GetCurrentWorkload()) + " af, nieuwe waardes maken");
 
                         //Checken of de heartrate niet groter is dan 75%, anders stoppen
-                        if (workloadHearthbeat > (CalculateMaximumHeartRate() * 0.80))
+                        if (workloadHearthbeat > (CalculateMaximumHeartRate() * 0.70))
                         {
                             workloadStarted = MainClient.GetLastMeting().Seconds;
                             currentstate = state.COOLINGDOWN;
@@ -143,28 +143,30 @@ namespace ErgometerApplication
                             MainClient.ComPort.Write("PW 25");
                             MainClient.ComPort.Read();
                             currentPower = 25;
+                            break;
                         }
+
+                        MainClient.SwitchWorkloadAudio();
                     }
-                    else if (MainClient.GetLastMeting().Seconds - workloadStarted > 160 && workloadHearthbeat == 0)
+                    else if (MainClient.GetLastMeting().Seconds - workloadStarted > 20 && workloadHearthbeat == 0)
                     {
-                        List<ErgometerLibrary.Meting> last150 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 150, 150);
-                        workloadHearthbeat = FindAverageValue(last150, x => x.HeartBeat);
-                        Console.WriteLine("2:40 gefiets, gemiddelde harstslag berekenen:" + workloadHearthbeat);
+                        List<ErgometerLibrary.Meting> last35 = MainClient.Metingen.GetRange(MainClient.Metingen.Count - 35, 35);
+                        workloadHearthbeat = FindAverageValue(last35, x => x.HeartBeat);
                         client.updateStepsText("U bent nu met de " + NumToText(GetCurrentWorkload()) + " workload bezig. Uw gemiddelde hartslag is berekend als " + workloadHearthbeat + "bpm.");
                     }
-                    else if(MainClient.GetLastMeting().Seconds - workloadStarted > 9 && MainClient.GetLastMeting().Seconds - workloadStarted < 11)
+                    else if(MainClient.GetLastMeting().Seconds - workloadStarted > 4 && MainClient.GetLastMeting().Seconds - workloadStarted < 6)
                     {
                         client.updateStepsText("U bent nu met de " + NumToText(GetCurrentWorkload()) + " workload bezig. De fiets staat nu ingesteld op " + MainClient.GetLastMeting().Power + " Watt");
                     }
                     break;
                 case state.COOLINGDOWN:
-                    if(MainClient.GetLastMeting().Seconds - workloadStarted > 360)
+                    if(MainClient.GetLastMeting().Seconds - workloadStarted > 15)
                     {
                         currentstate = state.STOP;
                         MainClient.SwitchTestModeAudio();
                         client.updateStepsText("De test is afgelopen.");
                     }
-                    else if(MainClient.GetLastMeting().Seconds - workloadStarted > 9 && MainClient.GetLastMeting().Seconds - workloadStarted < 11)
+                    else if(MainClient.GetLastMeting().Seconds - workloadStarted > 4 && MainClient.GetLastMeting().Seconds - workloadStarted < 6)
                     {
                         client.updateStepsText("U bent momenteel met de cooldown bezig.");
                     }
