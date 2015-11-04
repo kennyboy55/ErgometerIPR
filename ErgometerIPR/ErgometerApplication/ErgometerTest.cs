@@ -42,9 +42,20 @@ namespace ErgometerApplication
             this.client = client;
             client.updateStepsText("U begint nu aan een warmup, probeer een tempo van 50 rpm aan te houden. De test gaat automatisch verder.");
 			workloads = new List<Workload>();
-            MainClient.ComPort.Write("PW 25");
-            MainClient.ComPort.Read();
-            currentPower = 25;
+
+            if (gender == 'M')
+            {
+                MainClient.ComPort.Write("PW 50");
+                MainClient.ComPort.Read();
+                currentPower = 50;
+            }
+            else
+            {
+                MainClient.ComPort.Write("PW 25");
+                MainClient.ComPort.Read();
+                currentPower = 25;
+            }
+            
             MainClient.Client.heartBeat.max = (int)CalculateMaximumHeartRate();
         }
 
