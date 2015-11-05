@@ -73,7 +73,7 @@ namespace ErgometerApplication
             else
                 deviation = Math.Max(deviation-1, 0);
 
-            if(deviation >= 80 && !failed)
+            if(deviation >= 60 && !failed)
             {
                 workloadStarted = MainClient.GetLastMeting().Seconds;
                 currentstate = state.COOLINGDOWN;
@@ -132,8 +132,8 @@ namespace ErgometerApplication
                         workloadHearthbeat = 0;
                         Console.WriteLine("3:00 gefietst, workload" + (GetCurrentWorkload()) + " af, nieuwe waardes maken");
 
-                        //Checken of de heartrate niet groter is dan 75%, anders stoppen
-                        if (workloadHearthbeat > (CalculateMaximumHeartRate() * 0.70))
+                        //Checken of de heartrate niet groter is dan 70%, anders stoppen
+                        if (workloadHearthbeat > (CalculateMaximumHeartRate() * 0.70) || GetCurrentWorkload() >= 4)
                         {
                             workloadStarted = MainClient.GetLastMeting().Seconds;
                             currentstate = state.COOLINGDOWN;
@@ -168,7 +168,7 @@ namespace ErgometerApplication
                     }
                     else if(MainClient.GetLastMeting().Seconds - workloadStarted > 4 && MainClient.GetLastMeting().Seconds - workloadStarted < 6)
                     {
-                        client.updateStepsText("U bent momenteel met de cooldown bezig.");
+                        client.updateStepsText("U bent momenteel met de cooldown bezig. U krijgt uw resulataten binnenkort te zien.");
                     }
                     break;
                 case state.STOP:
@@ -176,18 +176,23 @@ namespace ErgometerApplication
                     MainClient.Client.beeptimer.Stop();
                     MainClient.ComPort.Write("RS");
                     MainClient.ComPort.Read();
-                    currentPower = 0;
-                    if(failed)
+                    currentPower = 25;
+                    if (workloads.Count > 1)
                     {
-                        MainClient.Client.updateStepsText("De test is mislukt omdat u te vaak heeft afgeweken van 50rpm. Onze excuses voor het ongemak.");
-                    }
-                    else if (workloads.Count > 1)
-                    {
-                        MainClient.Client.updateStepsText(String.Format("De test is afgelopen. Uw test resultaten zijn: \n VO2MAX: {0:0.00} MET: {1:0.00} Gemiddelde: {2:0.00} \n {3} ", CalculateVOMax(), CalculateMET(), CalculatePopulationAverage(), CalculateRating()));
+                        string str = "";
+
+                        if (failed)
+                        {
+                            MainClient.SendNetCommand(new ErgometerLibrary.NetCommand(CalculateVOMax(), CalculateMET(), CalculatePopulationAverage(), CalculateZScore(), CalculateRating(), MainClient.Session));
+                            str = "De test is mislukt omdat u te vaak heeft afgeweken van 50rpm. De resultaten kunnen hierdoor afwijken. ";
+                        }
+                        else
+                            str = "De test is afgelopen. ";
+                        MainClient.Client.updateStepsText(String.Format(str + "Uw test resultaten zijn: \n VO2MAX: {0:0.00} MET: {1:0.00} Gemiddelde: {2:0.00} \n {3} ", CalculateVOMax(), CalculateMET(), CalculatePopulationAverage(), CalculateRating()));
                     }
                     else
                     {
-                        MainClient.Client.updateStepsText("Er zijn te weinig workload tests afgenomen om een resultaat te maken. Onze excuses voor het ongemak.");
+                        MainClient.Client.updateStepsText("Er zijn te weinig workload tests afgenomen om een resultaat te maken.");
                     }
                     break;
             }
